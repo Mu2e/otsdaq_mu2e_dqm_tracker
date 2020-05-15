@@ -1,0 +1,81 @@
+#include "fcl/minimalMessageService.fcl"
+#include "fcl/standardProducers.fcl"
+#include "fcl/standardServices.fcl"
+#include "Trigger/fcl/templates.fcl"
+process_name : OccupancyPlots
+
+source : { module_type : RootInput }
+
+services : @local::Services.Reco
+
+producers    : { @table::Trigger.producers }
+filters      : { @table::Trigger.filters   }
+analyzers    : { @table::Trigger.analyzers }
+paths        : { @table::Trigger.paths     }
+outputs      : { @table::Trigger.outputs   }
+
+
+physics :
+{
+  producers : { @table::producers 
+
+	makeSD:
+	{
+	    module_type: Mu2eProducer
+	    diagLevel: 0
+	    parseCAL: 0
+	    parseTRK: 1
+	}
+	
+	CaloDigiFromShower:
+	{
+	    module_type: Mu2eProducer
+	    diagLevel: 0
+	    parseCAL: 1
+	    parseTRK: 0
+	}
+	
+	
+    }
+    
+    filters   : { @table::filters }
+
+  analyzers : { 
+
+                Occupancy : {
+                    module_type : Occupancy
+                    triggerPathsList : [tprSeedDeM_path  ]
+
+                }
+
+    }
+}
+
+
+    #unbiased trigger path
+    unbiased_path                : [ @sequence::paths.unbiased                       ]
+    
+    #minimum bias filters
+    minimumbiasSDCount_path      : [ @sequence::paths.minimumbiasSDCount             ]
+
+    #path for selecting events with large ammount of strawDigis
+    largeSDCount_path            : [ @sequence::paths.largeSDCount                   ]
+    
+    #path for the calorimeter only trigger
+    caloMVACE_path               : [ CaloDigiFromShower, @sequence::paths.caloMVACE   ]
+ 
+    #path for calorimeter cosmic muon calibration
+    caloCosmicMuon_path          : [ CaloDigiFromShower, @sequence::paths.caloCalibCosmic   ]
+
+    #paths for TrkPatRec downstream e- and e+
+    tprSeedDeM_path                 : [ makeSD,  @sequence::paths.tprSeedDeM                          ]
+    tprSeedDeP_path                 : [ makeSD,  @sequence::paths.tprSeedDeP                          ]
+
+    #paths for CalPatRec downstream e- and e+
+    cprSeedDeM_path                 : [ makeSD, CaloDigiFromShower, @sequence::paths.cprSeedDeM       ]
+    cprSeedDeP_path                 : [ makeSD, CaloDigiFromShower, @sequence::paths.cprSeedDeP       ]
+
+physics.EndPath : [ Occupancy ]
+
+
+services.TFileService.fileName: "Occupancy.root"

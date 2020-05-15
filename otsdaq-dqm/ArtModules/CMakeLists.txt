@@ -28,37 +28,37 @@ canvas
   DTCInterface
 ) #add libs here if want more mu2e stuff $OFFLINE_LIBS - > get name: libNAME.so
 
-#simple_plugin(TriggerRates "module"
-#        artdaq-core_Utilities
-#	NetworkUtilities
-#	artdaq-core_Data
-#	artdaq-core_Core
-#    ${ROOT_CORE}
-#    ${ROOT_GPAD}
-# 	${ROOT_HIST}
-# 	${ROOT_GUI}
-# 	${ROOT_RIO}
-#    ${ROOT_NET}
-#    ${CETLIB_EXCEPT}
-#art_Framework_Services_Registry  
-#art_root_io
-#  art_root_io_tfile_support
-#  art_root_io_TFileService_service
-#  $ENV{OFFLINE_LIB}/libmu2e_ConditionsService.so
-#  $ENV{OFFLINE_LIB}/libmu2e_Mu2eInterfaces.so
-#  $ENV{OFFLINE_LIB}/libmu2e_RecoDataProducts.so
-#  $ENV{OFFLINE_LIB}/libmu2e_MCDataProducts.so
-#  $ENV{OFFLINE_LIB}/libmu2e_BFieldGeom.so
-#  $ENV{OFFLINE_LIB}/libmu2e_GeometryService.so
-#  $ENV{OFFLINE_LIB}/libmu2e_TrackerGeom.so
-#  $ENV{OFFLINE_LIB}/libmu2e_GlobalConstantsService.so
-#  $ENV{OFFLINE_LIB}/libmu2e_Mu2eUtilities.so
-#  $ENV{OFFLINE_LIB}/libmu2e_DataProducts.so
-#  $ENV{OFFLINE_LIB}/libmu2e_TrackerConditions.so
-#  $ENV{OFFLINE_LIB}/libmu2e_GlobalConstantsService_GlobalConstantsService_service.so
-#  $ENV{OFFLINE_LIB}/libmu2e_TrackerMC.so
-#  $ENV{OFFLINE_LIB}/libmu2e_CaloReco.so
-#)
+simple_plugin(Occupancy "module"
+    artdaq-core_Utilities
+	NetworkUtilities
+	artdaq-core_Data
+	artdaq-core_Core
+    ${ROOT_CORE}
+    ${ROOT_GPAD}
+ 	${ROOT_HIST}
+ 	${ROOT_GUI}
+ 	${ROOT_RIO}
+    ${ROOT_NET}
+    ${CETLIB_EXCEPT}
+    art_Framework_Services_Registry  
+    art_root_io
+    art_root_io_tfile_support
+    art_root_io_TFileService_service
+    $ENV{OFFLINE_LIB}/libmu2e_ConditionsService.so
+    $ENV{OFFLINE_LIB}/libmu2e_Mu2eInterfaces.so
+    $ENV{OFFLINE_LIB}/libmu2e_RecoDataProducts.so
+    $ENV{OFFLINE_LIB}/libmu2e_MCDataProducts.so
+    $ENV{OFFLINE_LIB}/libmu2e_BFieldGeom.so
+    $ENV{OFFLINE_LIB}/libmu2e_GeometryService.so
+    $ENV{OFFLINE_LIB}/libmu2e_TrackerGeom.so
+    $ENV{OFFLINE_LIB}/libmu2e_GlobalConstantsService.so
+    $ENV{OFFLINE_LIB}/libmu2e_Mu2eUtilities.so
+    $ENV{OFFLINE_LIB}/libmu2e_DataProducts.so
+    $ENV{OFFLINE_LIB}/libmu2e_TrackerConditions.so
+    $ENV{OFFLINE_LIB}/libmu2e_GlobalConstantsService_GlobalConstantsService_service.so
+    $ENV{OFFLINE_LIB}/libmu2e_TrackerMC.so
+   $ENV{OFFLINE_LIB}/libmu2e_CaloReco.so
+)
 
 simple_plugin(ProtoType "module"
        artdaq-core_Utilities
@@ -92,71 +92,40 @@ art_root_io
   $ENV{OFFLINE_LIB}/libmu2e_CaloReco.so
 )
 
-# simple_plugin(WireChamberDQM "module"
-# 	otsdaq-dqm_Overlays
-#         ECLWriterCore
-#   NetworkUtilities
-# 	artdaq-core_Data
-# 	${CETLIB_EXCEPT}
-# 	${ROOT_GPAD}
-# 	${ROOT_HIST}
-# 	${ROOT_GUI}
-# 	${ROOT_RIO}
-#   ${ROOT_NET}
-# #	MessageFacility
-# 	${MF_MESSAGELOGGER}
-# 	${MF_UTILITIES}
-# 	${XMLRPC_SERVER_ABYSSPP}
-# 	${XMLRPC_SERVER_ABYSS}
-# 	${XMLRPC_SERVERPP}
-# 	${XMLRPC_CLIENT}
-# 	${XMLRPC_CLIENTPP}
-# 	${XMLRPC_SERVER}
-# 	${XMLRPC_ABYSS}
-# 	${XMLRPCPP}
-# 	${XMLRPC}
-# 	${XMLRPC_UTIL}
-# 	${XMLRPC_UTILPP}
-# 	${XMLRPC_XMLPARSE}
-# 	${XMLRPC_XMLTOK}
-# 	curl
-# 	pthread
-# )
-# simple_plugin(WireChamberDQMECL "module"
-# 	otsdaq-trigger_Overlays
-#         ECLWriterCore
-#   NetworkUtilities
-# 	artdaq-core_Data
-# 	${CETLIB_EXCEPT}
-# 	${ROOT_GPAD}
-# 	${ROOT_HIST}
-# 	${ROOT_GUI}
-# 	${ROOT_RIO}
-#   ${ROOT_NET}
-# #	MessageFacility
-# 	${MF_MESSAGELOGGER}
-# 	${MF_UTILITIES}
-# 	${XDAQ_XERCES-C}
-# 	pthread
-# )
-
-
-#simple_plugin(TriggerCounter "module"
-#        artdaq-core_Utilities
-#	otsdaq-dqm_Overlays
-#	NetworkUtilities
-#	artdaq-core_Data
-#	 artdaq-core_Core
-#	${CETLIB_EXCEPT}
-#	${ROOT_GPAD}
-#	${ROOT_HIST}
-#	${ROOT_GUI}
-#	${ROOT_RIO}
-#  ${ROOT_NET}
-#	MessageFacility
-#	${MF_MESSAGELOGGER}
-#	${MF_UTILITIES}
-#)
-
-
+simple_plugin(BeamMonitor "module"
+       artdaq-core_Utilities
+	NetworkUtilities
+	artdaq-core_Data
+	artdaq-core_Core
+    ${ROOT_CORE}
+    ${ROOT_GPAD}
+ 	${ROOT_HIST}
+ 	${ROOT_GUI}
+ 	${ROOT_RIO}
+    ${ROOT_NET}
+    ${CETLIB_EXCEPT}
+  art_Framework_Services_Registry  
+  art_Framework_Services_System_TriggerNamesService_service
+  art_root_io
+  art_root_io_tfile_support
+  art_root_io_TFileService_service
+  art_Persistency_Common
+  art_Persistency_Provenance
+  art_Utilities
+  canvas
+  $ENV{OFFLINE_LIB}/libmu2e_ConditionsService.so
+  $ENV{OFFLINE_LIB}/libmu2e_Mu2eInterfaces.so
+  $ENV{OFFLINE_LIB}/libmu2e_RecoDataProducts.so
+  $ENV{OFFLINE_LIB}/libmu2e_MCDataProducts.so
+  $ENV{OFFLINE_LIB}/libmu2e_BFieldGeom.so
+  $ENV{OFFLINE_LIB}/libmu2e_GeometryService.so
+  $ENV{OFFLINE_LIB}/libmu2e_TrackerGeom.so
+  $ENV{OFFLINE_LIB}/libmu2e_GlobalConstantsService.so
+  $ENV{OFFLINE_LIB}/libmu2e_Mu2eUtilities.so
+  $ENV{OFFLINE_LIB}/libmu2e_DataProducts.so
+  $ENV{OFFLINE_LIB}/libmu2e_TrackerConditions.so
+  $ENV{OFFLINE_LIB}/libmu2e_GlobalConstantsService_GlobalConstantsService_service.so
+  $ENV{OFFLINE_LIB}/libmu2e_TrackerMC.so
+  $ENV{OFFLINE_LIB}/libmu2e_CaloReco.so
+)
 
