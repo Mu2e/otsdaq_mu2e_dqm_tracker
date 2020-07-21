@@ -41,7 +41,8 @@ namespace ots
 
 			TH1F*                              hGauss_;//TODO need to add our own class here
 			TTree*                             testTree_;
-            ProtoTypeHistos                    testHistos_;
+           // ProtoTypeHistos* testHistos_ = new ProtoTypeHistos("Default");
+			ProtoTypeHistos                    testHistos_;
 	};
 }
 
