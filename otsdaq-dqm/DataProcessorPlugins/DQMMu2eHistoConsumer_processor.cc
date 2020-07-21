@@ -38,7 +38,6 @@ using namespace ots;
 			DQMHistosBase::myDirectory_ = DQMHistosBase::theFile_->mkdir("Mu2eHistos", "Mu2eHistos");
 			DQMHistosBase::myDirectory_->cd();
 			
-
             testHistos_.BookHistos(DQMHistosBase::myDirectory_); //pass directory 
 			std::cout << __PRETTY_FUNCTION__ << "Starting!" << std::endl;
 			DataConsumer::startProcessingData(runNumber);
@@ -88,9 +87,9 @@ using namespace ots;
 		if(DataConsumer::read(dataP_, headerP_) < 0)//is there something in the buffer?
 		{
 			std::this_thread::sleep_for(std::chrono::milliseconds(10));//10
+		//	__CFG_COUT__ << "There is nothing in the buffer" << std::endl;
 			return;
 		}
-		
 	    TBufferFile message(TBuffer::kWrite);//prepare message
 	    message.WriteBuf(dataP_->data(), dataP_->size()); //copy buffer
 	    message.SetReadMode();
@@ -107,11 +106,19 @@ using namespace ots;
 		   
 		    readObject = (TH1*) message.ReadObject(objectClass);///read object
 		    TH1* object = (TH1*)DQMHistosBase::myDirectory_->FindObjectAny(readObject->GetName());//find in memory
-		    object->Reset();
-		    object->Add((TH1*)readObject);//add the filled copy
+		    std::cout << "readObject->GetName() output: " << readObject->GetName() << std::endl;
+		    __CFG_COUT__ << "object = " << object << std::endl;
+		    if(object != nullptr) {
+		    	object->Reset();
+		    	object->Add((TH1*)readObject);//add the filled copy
 		  
-		    __CFG_COUT__ << "Histo name: " << testHistos_.Test._FirstHist->GetName() << std::endl;
-		    
+		    	__CFG_COUT__ << "Histo name: " << testHistos_.Test._FirstHist->GetName() << std::endl;
+			}
+		    else {
+                     	__CFG_COUT__ << "Histo pointer is NULL" << std::endl;
+			//Exception does not prevent state machine from transitioning, fix this!
+			//__SS__ << "Histo pointer is NULL"; __SS_THROW__;
+		    }
 	    }
 		DataConsumer::setReadSubBuffer<std::string, std::map<std::string, std::string>>();
 	}
