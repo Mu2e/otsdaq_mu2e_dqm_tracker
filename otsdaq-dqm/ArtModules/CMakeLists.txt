@@ -102,6 +102,7 @@ simple_plugin(TrackerDQM "module"
         artdaq-core_Core
     ${ROOT_CORE}
     ${ROOT_GPAD}
+    ${ROOT_TREE}
         ${ROOT_HIST}
         ${ROOT_GUI}
         ${ROOT_RIO}
