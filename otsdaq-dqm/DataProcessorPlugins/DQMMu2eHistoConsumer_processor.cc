@@ -38,7 +38,7 @@ using namespace ots;
 			DQMHistosBase::myDirectory_ = DQMHistosBase::theFile_->mkdir("Mu2eHistos", "Mu2eHistos");
 			DQMHistosBase::myDirectory_->cd();
 			
-            testHistos_.BookHistos(DQMHistosBase::myDirectory_); //pass directory 
+			testHistos_.BookHistos(DQMHistosBase::myDirectory_, "Pedestal");
 			std::cout << __PRETTY_FUNCTION__ << "Starting!" << std::endl;
 			DataConsumer::startProcessingData(runNumber);
 			std::cout << __PRETTY_FUNCTION__ << "Started!" << std::endl;
@@ -112,7 +112,9 @@ using namespace ots;
 		    	object->Reset();
 		    	object->Add((TH1*)readObject);//add the filled copy
 		  
-		    	__CFG_COUT__ << "Histo name: " << testHistos_.Test._FirstHist->GetName() << std::endl;
+		    	//__CFG_COUT__ << "Histo name: " << testHistos_.Test._FirstHist->GetName() << std::endl;
+			__CFG_COUT__ << "Histo name: " << testHistos_.histograms[0]._Hist->GetName() << std::endl;
+			//__CFG_COUT__ << "Histo name: " << testHistos_.histograms[1]._Hist->GetName() << std::endl;
 			}
 		    else {
                      	__CFG_COUT__ << "Histo pointer is NULL" << std::endl;
