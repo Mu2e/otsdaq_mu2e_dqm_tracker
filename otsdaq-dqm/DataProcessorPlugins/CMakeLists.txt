@@ -4,6 +4,7 @@ simple_plugin(DQMMu2eHistoConsumer "processor"
     RootUtilities
     WorkLoopManager
     ${CETLIB}
+    ${ROOT_TREE}
     MF_MessageLogger
     art_Utilities
     art_root_io
