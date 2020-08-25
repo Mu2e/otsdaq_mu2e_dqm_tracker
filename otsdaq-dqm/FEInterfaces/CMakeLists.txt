@@ -3,5 +3,10 @@ simple_plugin(FEHistoMakerInterface "interface"
   NetworkUtilities
   WorkLoopManager
   ConfigurationInterface
+  TableCore
+  Macros
   ${CETLIB}
+  ${MF_MESSAGELOGGER}
+  ${XDAQ_XERCES-C}
+  pthread
 )
