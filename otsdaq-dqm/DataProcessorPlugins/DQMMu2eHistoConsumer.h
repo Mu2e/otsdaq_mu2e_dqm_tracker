@@ -3,8 +3,8 @@
 
 #include "otsdaq/DataManager/DQMHistosConsumerBase.h"
 #include "otsdaq/Configurable/Configurable.h"
-//#include "otsdaq_mu2e_dqm/otsdaq-dqm/ArtModules/ProtoTypeHistos.h"
-#include "otsdaq_mu2e_dqm/otsdaq-dqm/ArtModules/HistoContainer.h"
+//#include "otsdaq-dqm/ArtModules/ProtoTypeHistos.h"
+#include "otsdaq-dqm/ArtModules/HistoContainer.h"
 #include <string>
 
 class TFile;
