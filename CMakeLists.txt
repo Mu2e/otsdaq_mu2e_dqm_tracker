@@ -7,7 +7,7 @@
 # ======================================================================
 
 
-# use cmake 2.8 or later
+# use cmake 3.17 or later
 cmake_minimum_required (VERSION 3.17)
 
 
@@ -94,16 +94,16 @@ include(CetTest)
 add_subdirectory(otsdaq-dqm)
 
 # Useful scripts
-#add_subdirectory(tools)
+add_subdirectory(tools)
 
 # Test Programs
-#add_subdirectory(test)
+add_subdirectory(test)
 
 # Documentation directory
 #add_subdirectory(doc)
 
 # UPS
-#add_subdirectory(ups)
+add_subdirectory(ups)
 
 # Data
 #FILE(COPY ConfigurationDataExamples DESTINATION Data)
