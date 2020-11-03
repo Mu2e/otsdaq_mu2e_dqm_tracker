@@ -44,6 +44,7 @@ simple_plugin(Occupancy "module"
     art_root_io
     art_root_io_tfile_support
     art_root_io_TFileService_service
+  MF_MessageLogger
     $ENV{OFFLINE_LIB}/libmu2e_ConditionsService.so
     $ENV{OFFLINE_LIB}/libmu2e_Mu2eInterfaces.so
     $ENV{OFFLINE_LIB}/libmu2e_RecoDataProducts.so
@@ -112,6 +113,7 @@ art_Framework_Services_Registry
 art_root_io
   art_root_io_tfile_support
   art_root_io_TFileService_service
+  MF_MessageLogger
   $ENV{OFFLINE_LIB}/libmu2e_ConditionsService.so
   $ENV{OFFLINE_LIB}/libmu2e_Mu2eInterfaces.so
   $ENV{OFFLINE_LIB}/libmu2e_RecoDataProducts.so
@@ -150,6 +152,7 @@ simple_plugin(BeamMonitor "module"
   art_Persistency_Provenance
   art_Utilities
   canvas
+  MF_MessageLogger
   $ENV{OFFLINE_LIB}/libmu2e_ConditionsService.so
   $ENV{OFFLINE_LIB}/libmu2e_Mu2eInterfaces.so
   $ENV{OFFLINE_LIB}/libmu2e_RecoDataProducts.so

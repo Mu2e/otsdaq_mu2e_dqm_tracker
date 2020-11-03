@@ -3,6 +3,12 @@ simple_plugin(DQMMu2eHistoConsumer "processor"
     DataManager
     RootUtilities
     WorkLoopManager
+    TableCore
+    Macros
+    ConfigurationInterface
+    ${ROOT_CORE}
+    ${ROOT_RIO}
+    ${ROOT_HIST}
     ${CETLIB}
     ${ROOT_TREE}
     MF_MessageLogger
