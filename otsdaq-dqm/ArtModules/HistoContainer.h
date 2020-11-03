@@ -51,10 +51,15 @@ class HistoContainer
 		this->histograms[histograms.size() - 1].straw = sid.straw();
         }
 
-	void BookHistos(art::ServiceHandle<art::TFileService>  tfs, std::string Title){
+	void BookHistos(art::ServiceHandle<art::TFileService>  tfs, std::string Title, int station, int plane, int panel, int straw){
                 histograms.push_back(summaryInfoHist_());
                 art::TFileDirectory TestDir = tfs->mkdir("TestingHistos");
                 this->histograms[histograms.size() - 1]._Hist = TestDir.make<TH1F>(Title.c_str(), Title.c_str(), 1000,0,4000);
+		this->histograms[histograms.size() - 1].station = station;
+                this->histograms[histograms.size() - 1].plane = plane;
+                this->histograms[histograms.size() - 1].panel = panel;
+                this->histograms[histograms.size() - 1].straw = straw;
+
 	}
 
 	void BookHistos(TDirectory *dir, std::string Title){

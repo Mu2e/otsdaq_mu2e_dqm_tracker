@@ -1,0 +1,30 @@
+#include "fcl/minimalMessageService.fcl"
+
+process: TrackerDQM
+
+source : {
+  module_type : RootInput
+  maxEvents : 3
+}
+
+services : {
+  message : @local::default_message
+}
+
+physics :{
+  analyzers: {
+    dqm: {
+      module_type : TrackerDQM
+      port : 6000
+      trkTag : "daq:trk"
+      histType : "pedestal"
+    }
+  }
+
+  p1 : [ ]
+  e1 : [dqm]
+
+  trigger_paths : [p1]
+  end_paths : [e1]
+
+}

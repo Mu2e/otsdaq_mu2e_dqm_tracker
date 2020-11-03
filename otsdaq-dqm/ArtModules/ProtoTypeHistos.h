@@ -15,7 +15,6 @@ namespace ots
 class ProtoTypeHistos
 {
     public:
-	ProtoTypeHistos(const std::string Title);
         ProtoTypeHistos(){};
 	    virtual ~ProtoTypeHistos(void){};
         struct  summaryInfoHist_  {
@@ -27,23 +26,16 @@ class ProtoTypeHistos
         const std::string _title;
         summaryInfoHist_ Test;
 
-        void BookHistos(art::ServiceHandle<art::TFileService>  tfs){
+        void BookHistos(art::ServiceHandle<art::TFileService>  tfs, std::string Title){
             art::TFileDirectory TestDir = tfs->mkdir("TestingHistos");
-	    //this->Test._FirstHist = TestDir.make<TH1F>(_title.c_str(), _title.c_str(), 1000, 0,110);
-	    this->Test._FirstHist = TestDir.make<TH1F>("test", "test", 1000, 0, 30000);	
+	    this->Test._FirstHist = TestDir.make<TH1F>(Title.c_str(), Title.c_str(), 1000, 0,110);
         }
 
-        void BookHistos(TDirectory *dir){
+        void BookHistos(TDirectory *dir, std::string Title){
             dir->mkdir("TestingHistos", "TestingHistos");
-	    //this->Test._FirstHist = new TH1F(_title.c_str(), _title.c_str(), 1000, 0,110);
-	    this->Test._FirstHist = new TH1F("test", "test", 1000, 0, 30000);
+	    this->Test._FirstHist = new TH1F(Title.c_str(), Title.c_str(), 1000, 0,110);
         }
 };
-
-ProtoTypeHistos::ProtoTypeHistos(const std::string Title) : _title(Title) {}
-
-//ProtoTypeHistos::ProtoTypeHistos() : _title("Default") {}
-
 
 }
 

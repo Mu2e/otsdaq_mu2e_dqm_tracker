@@ -59,7 +59,8 @@ namespace ots {
 		std::vector<std::string> _histType;
 		art::ServiceHandle<art::TFileService> tfs;
 		//ProtoTypeHistos *histos = new ProtoTypeHistos();
-		HistoContainer *histos = new  HistoContainer();
+		HistoContainer *pedestal_histos = new  HistoContainer();
+		HistoContainer *straw_histos = new HistoContainer();
 		TCPPublishServer *tcp = new TCPPublishServer(_port);
 	};
 }
@@ -72,6 +73,25 @@ void ots::TrackerDQM::beginJob() {
 
 	std::cout << "Beginning job" << std::endl;
 	//histos->BookHistos(tfs, "Pedestal");
+	for(int station = 0; station < 18; station++) {
+                                for(int plane = 0; plane < 3; plane++) {
+                                        for(int panel = 0; panel < 7; panel++) {
+                                                for(int straw = 0; straw < 97; straw++) {
+                                                        pedestal_histos->BookHistos(tfs, "Pedestal" + std::to_string(station) + " " + std::to_string(plane) + " " + std::to_string(panel) + " " + std::to_string(straw), station, plane, panel, straw);
+                                                }
+                                        }
+                                }
+                        }
+
+	for(int station = 0; station < 18; station++) {
+                                for(int plane = 0; plane < 3; plane++) {
+                                        for(int panel = 0; panel < 7; panel++) {
+                                                        straw_histos->BookHistos(tfs, "Straw Hits" + std::to_string(station) + " " + std::to_string(plane) + " " + std::to_string(panel) + " " + std::to_string(0), station, plane, panel, 0);
+                                        }
+                                }
+                        }
+
+
 }
 
 
@@ -124,20 +144,21 @@ void ots::TrackerDQM::analyze(art::Event const& event) {
 					
 				for(std::string name : _histType) {
 					if(name == "pedestal") {
-						straw_fill(histos, pedestal_est(adcs), "Pedestal", tfs, sid);
+						straw_fill(pedestal_histos, pedestal_est(adcs), "Pedestal", tfs, sid);
 					} else if(name == "strawHits") {
-						panel_fill(histos, sid.straw(), "Straw Hits", tfs, sid);
-					} else if(name == "maxadc") {
-						straw_fill(histos, max_adc(adcs), "Maximum ADC Value", tfs, sid);
-					} else if(name == "deltaT") {
-						straw_fill(histos, tdc[1]-tdc[0], "delta T", tfs, sid);
-					} else if(name == "peak_pedestal") {
- 						straw_fill(histos, max_adc(adcs) - pedestal_est(adcs), "Peak - Pedestal", tfs, sid);
-					} else {
+						panel_fill(straw_histos, sid.straw(), "Straw Hits", tfs, sid);
+					} //else if(name == "maxadc") {
+					//	straw_fill(histos, max_adc(adcs), "Maximum ADC Value", tfs, sid);
+					//} else if(name == "deltaT") {
+					//	straw_fill(histos, tdc[1]-tdc[0], "delta T", tfs, sid);
+					//} else if(name == "peak_pedestal") {
+ 					//	straw_fill(histos, max_adc(adcs) - pedestal_est(adcs), "Peak - Pedestal", tfs, sid);
+					 else {
 						__MOUT_ERR__ << "Unrecognized histogram type" << std::endl;
 					}
-				}
 
+				}
+				
 
 			}
 		}
@@ -146,10 +167,23 @@ void ots::TrackerDQM::analyze(art::Event const& event) {
 	TBufferFile message(TBuffer::kWrite);
 	//message.WriteObject(histos->Test._FirstHist);
 
-	message.WriteObject(histos->histograms[0]._Hist);
+	for(int idx = 0; idx < int(pedestal_histos->histograms.size()); idx ++) {
+		message.WriteObject(pedestal_histos->histograms[idx]._Hist);
+		tcp->broadcastPacket(message.Buffer(), message.Length());
 
+		message.Reset();
+	}
+	for(int idx = 0; idx < int(straw_histos->histograms.size()); idx ++) {
+                message.WriteObject(straw_histos->histograms[idx]._Hist);
+                tcp->broadcastPacket(message.Buffer(), message.Length());
 
-	tcp->broadcastPacket(message.Buffer(), message.Length());
+                message.Reset();
+
+		//std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+	//message.WriteObject(histo);
+        //tcp->broadcastPacket(message.Buffer(), message.Length());
+	}
 }
 
 void ots::TrackerDQM::endJob() {
