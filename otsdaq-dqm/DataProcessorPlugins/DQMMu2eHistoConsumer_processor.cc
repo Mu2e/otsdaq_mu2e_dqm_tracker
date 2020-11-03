@@ -38,7 +38,26 @@ using namespace ots;
 			DQMHistosBase::myDirectory_ = DQMHistosBase::theFile_->mkdir("Mu2eHistos", "Mu2eHistos");
 			DQMHistosBase::myDirectory_->cd();
 			
-			testHistos_.BookHistos(DQMHistosBase::myDirectory_, "Pedestal");
+			for(int station = 0; station < 1; station++) {
+				for(int plane = 0; plane < 2; plane++) {
+					for(int panel = 0; panel < 6; panel++) {
+						for(int straw = 0; straw < 96; straw++) {
+							testHistos_.BookHistos(DQMHistosBase::myDirectory_, "Pedestal" + std::to_string(station) + " " + std::to_string(plane) + " " + std::to_string(panel) + " " + std::to_string(straw));
+						}
+					}
+				}
+			}
+
+			for(int station = 0; station < 1; station++) { 
+                                for(int plane = 0; plane < 2; plane++) {
+                                        for(int panel = 0; panel < 6; panel++) {
+                                                        testHistos_.BookHistos(DQMHistosBase::myDirectory_, "Straw Hits" + std::to_string(station) + " " + std::to_string(plane) + " " + std::to_string(panel) + " " + std::to_string(0));     
+                                        }
+                                }
+                        }
+
+			//testHistos_.BookHistos(DQMHistosBase::myDirectory_, "Pedestal");
+			//testHistos_.BookHistos(DQMHistosBase::myDirectory_, "deltaTT");
 			std::cout << __PRETTY_FUNCTION__ << "Starting!" << std::endl;
 			DataConsumer::startProcessingData(runNumber);
 			std::cout << __PRETTY_FUNCTION__ << "Started!" << std::endl;
@@ -111,9 +130,10 @@ using namespace ots;
 		    if(object != nullptr) {
 		    	object->Reset();
 		    	object->Add((TH1*)readObject);//add the filled copy
-		  
+		  	
+			__CFG_COUT__ << "Histo name: " << object->GetName();
 		    	//__CFG_COUT__ << "Histo name: " << testHistos_.Test._FirstHist->GetName() << std::endl;
-			__CFG_COUT__ << "Histo name: " << testHistos_.histograms[0]._Hist->GetName() << std::endl;
+			//__CFG_COUT__ << "Histo name: " << testHistos_.histograms[0]._Hist->GetName() << std::endl;
 			//__CFG_COUT__ << "Histo name: " << testHistos_.histograms[1]._Hist->GetName() << std::endl;
 			}
 		    else {
