@@ -21,7 +21,7 @@
 #include <RecoDataProducts/inc/StrawDigi.hh>
 #include <RecoDataProducts/inc/StrawDigiCollection.hh>
 #include "mu2e-artdaq-core/Overlays/FragmentType.hh"
-#include "mu2e-artdaq-core/Overlays/ArtFragmentReader.hh"
+#include "mu2e-artdaq-core/Overlays/TrackerFragment.hh"
 #include <artdaq-core/Data/Fragment.hh>
 
 #include "DataProducts/inc/TrkTypes.hh"
@@ -123,14 +123,15 @@ void ots::TrackerDQM::analyze(art::Event const& event) {
 		size_t curIdx = idx;
 		const auto& fragment((*curHandle)[curIdx]);
 
-		mu2e::ArtFragmentReader cc(fragment);
+		mu2e::TrackerFragment cc(fragment);
 		
 		for(size_t curBlockIdx=0; curBlockIdx<cc.block_count(); curBlockIdx++) { //iterate over straws
-			auto hdr = cc.GetHeader(curBlockIdx);
-			if(hdr == nullptr) {
+		  auto block_data = cc.dataAtBlockIndex(curBlockIdx);
+			if(block_data == nullptr) {
 				mf::LogError("TrackerDQM") << "Unable to retrieve header from block " << curBlockIdx << "!" << std::endl;
 				continue;
 			}
+			auto hdr = block_data->GetHeader();
 			if(hdr->PacketCount>0) {
 				auto trkData = cc.GetTrackerData(curBlockIdx);
 				if(trkData == nullptr) {
