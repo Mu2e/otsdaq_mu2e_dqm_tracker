@@ -101,6 +101,7 @@ simple_plugin(TrackerDQM "module"
         NetworkUtilities
         artdaq-core_Data
         artdaq-core_Core
+	mu2e-artdaq-core_Overlays
     ${ROOT_CORE}
     ${ROOT_GPAD}
     ${ROOT_TREE}
