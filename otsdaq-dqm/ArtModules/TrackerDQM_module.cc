@@ -132,16 +132,19 @@ void ots::TrackerDQM::analyze(art::Event const& event) {
 				continue;
 			}
 			auto hdr = block_data->GetHeader();
-			if(hdr->PacketCount>0) {
-				auto trkData = cc.GetTrackerData(curBlockIdx);
-				if(trkData == nullptr) {
+			if(hdr.GetPacketCount()>0) {
+				auto trkDatas = cc.GetTrackerData(curBlockIdx);
+				if(trkDatas.empty()) {
 					mf::LogError("TrackerDQM") << "Error retrieving Tracker data from DataBlock " << curBlockIdx << "!";
 					continue;
 				}
-				mu2e::StrawId sid(trkData->StrawIndex);
-				mu2e::TrkTypes::TDCValues tdc = {trkData->TDC0, trkData->TDC1};
-				mu2e::TrkTypes::TOTValues tot = {trkData->TOT0, trkData->TOT1};
-				mu2e::TrkTypes::ADCWaveform adcs = trkData->Waveform();
+
+				for(auto& trkData : trkDatas) {
+				mu2e::StrawId sid(trkData.first.StrawIndex);
+				mu2e::TrkTypes::TDCValues tdc = {static_cast<uint16_t>(trkData.first.TDC0()), static_cast<uint16_t>(trkData.first.TDC1())};
+				mu2e::TrkTypes::TOTValues tot = {trkData.first.TOT0, trkData.first.TOT1};
+				mu2e::TrkTypes::ADCWaveform adcs;
+				std::copy_n(trkData.second.begin(), adcs.size(), adcs.begin());
 					
 				for(std::string name : _histType) {
 					if(name == "pedestal") {
@@ -159,7 +162,7 @@ void ots::TrackerDQM::analyze(art::Event const& event) {
 					}
 
 				}
-				
+				}
 
 			}
 		}
