@@ -91,7 +91,7 @@ include(BuildPlugins)
 include(CetTest)
 
 # Code
-add_subdirectory(otsdaq-dqm)
+add_subdirectory(otsdaq-dqm-tracker)
 
 # Useful scripts
 add_subdirectory(tools)
