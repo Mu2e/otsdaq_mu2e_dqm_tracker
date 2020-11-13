@@ -1,4 +1,4 @@
-#include "otsdaq-dqm/DataProcessorPlugins/DQMMu2eHistoConsumer.h"
+#include "otsdaq-dqm-tracker/DataProcessorPlugins/DQMMu2eHistoConsumer.h"
 #include "otsdaq/MessageFacility/MessageFacility.h"
 #include "otsdaq/Macros/CoutMacros.h"
 #include "otsdaq/Macros/ProcessorPluginMacros.h"

@@ -1,6 +1,6 @@
 //Some functions for producing histograms in trackerDQM. Author E. Croft
 #include "DataProducts/inc/TrkTypes.hh"
-#include "otsdaq_mu2e_dqm/otsdaq-dqm/ArtModules/HistoContainer.h"
+#include "otsdaq-dqm-tracker/ArtModules/HistoContainer.h"
 #include "art/Framework/Core/ModuleMacros.h"
 #include "art_root_io/TFileService.h"
 #include "DataProducts/inc/TrkTypes.hh"
