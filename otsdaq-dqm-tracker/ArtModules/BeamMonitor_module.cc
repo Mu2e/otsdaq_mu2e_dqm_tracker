@@ -76,7 +76,7 @@
 #include <Mu2eUtilities/inc/HelixTool.hh>
 
 //OTS:
-#include "otsdaq-dqm/ArtModules/OccupancyRootObjects.h"
+#include "otsdaq-dqm-tracker/ArtModules/OccupancyRootObjects.h"
 #include "otsdaq/MessageFacility/MessageFacility.h"
 #include "otsdaq/Macros/CoutMacros.h"
 #include "otsdaq/Macros/ProcessorPluginMacros.h"

@@ -3,7 +3,7 @@
 
 #include "otsdaq/DataManager/DQMHistosConsumerBase.h"
 #include "otsdaq/Configurable/Configurable.h"
-#include "otsdaq-dqm/ArtModules/HistoContainer.h"
+#include "otsdaq-dqm-tracker/ArtModules/HistoContainer.h"
 #include <string>
 
 class TFile;

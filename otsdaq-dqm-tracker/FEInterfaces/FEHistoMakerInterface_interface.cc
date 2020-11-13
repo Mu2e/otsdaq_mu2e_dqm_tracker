@@ -1,7 +1,7 @@
 #include "otsdaq/MessageFacility/MessageFacility.h"
 #include "otsdaq/Macros/CoutMacros.h"
 #include "otsdaq/Macros/InterfacePluginMacros.h"
-#include "otsdaq-dqm/FEInterfaces/FEHistoMakerInterface.h"
+#include "otsdaq-dqm-tracker/FEInterfaces/FEHistoMakerInterface.h"
 
 #include <chrono>
 #include <thread>
