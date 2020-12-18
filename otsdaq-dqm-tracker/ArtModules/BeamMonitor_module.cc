@@ -1,17 +1,17 @@
-//Author: S Middleton
-//Date: 2020
-//Purpose: analyzer to plot occupancy.
-//Art:
+// Author: S Middleton
+// Date: 2020
+// Purpose: analyzer to plot occupancy.
+// Art:
 #include "art/Framework/Core/EDAnalyzer.h"
 #include "art/Framework/Core/ModuleMacros.h"
 #include "art/Framework/Principal/Event.h"
 #include "art/Framework/Principal/Handle.h"
 #include "art/Framework/Principal/Run.h"
-#include "canvas/Utilities/InputTag.h"
-#include "art_root_io/TFileService.h"
-#include "art_root_io/TFileDirectory.h"
-#include "canvas/Persistency/Common/TriggerResults.h"
 #include "art/Framework/Services/System/TriggerNamesService.h"
+#include "art_root_io/TFileDirectory.h"
+#include "art_root_io/TFileService.h"
+#include "canvas/Persistency/Common/TriggerResults.h"
+#include "canvas/Utilities/InputTag.h"
 #include "cetlib_except/exception.h"
 #include "fhiclcpp/ParameterSet.h"
 #include "fhiclcpp/ParameterSetRegistry.h"
@@ -22,66 +22,65 @@
 
 #include "cetlib_except/exception.h"
 
-//OTS:
+// OTS:
 #include "otsdaq/Macros/CoutMacros.h"
 #include "otsdaq/MessageFacility/MessageFacility.h"
 
-//ROOT:
+// ROOT:
 //#include "art/Framework/Services/Optional/TFileService.h"
-#include "art_root_io/TFileService.h" 
+#include "art_root_io/TFileService.h"
 #include <TBufferFile.h>
+#include <TH1.h>
 #include <TH1F.h>
 #include <TH2F.h>
-#include <TH1.h>
 #include <TProfile.h>
 
-//Offline:
+// Offline:
 #include <ConditionsService/inc/AcceleratorParams.hh>
 #include <ConditionsService/inc/ConditionsHandle.hh>
 #pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wtype-limits" 
+#pragma GCC diagnostic ignored "-Wtype-limits"
 #pragma GCC diagnostic ignored "-Wpedantic"
 #include <BFieldGeom/inc/BFieldManager.hh>
 #include <TrackerGeom/inc/Tracker.hh>
 //#include <GlobalConstantsService/inc/GlobalConstantsHandle.hh">
 #pragma GCC diagnostic pop
 
-#include <GeometryService/inc/GeomHandle.hh>
+#include <DataProducts/inc/XYZVec.hh>
 #include <GeometryService/inc/DetectorSystem.hh>
+#include <GeometryService/inc/GeomHandle.hh>
 #include <RecoDataProducts/inc/CaloCluster.hh>
-#include <RecoDataProducts/inc/CaloTrigSeed.hh>
-#include <RecoDataProducts/inc/HelixSeed.hh>
-#include <RecoDataProducts/inc/KalSeed.hh>
-#include <RecoDataProducts/inc/TriggerInfo.hh>
-#include <RecoDataProducts/inc/ComboHit.hh>
-#include <RecoDataProducts/inc/StrawDigi.hh>
-#include <RecoDataProducts/inc/StrawDigiCollection.hh>
 #include <RecoDataProducts/inc/CaloDigi.hh>
 #include <RecoDataProducts/inc/CaloDigiCollection.hh>
-#include <DataProducts/inc/XYZVec.hh>
+#include <RecoDataProducts/inc/CaloTrigSeed.hh>
+#include <RecoDataProducts/inc/ComboHit.hh>
+#include <RecoDataProducts/inc/HelixSeed.hh>
+#include <RecoDataProducts/inc/KalSeed.hh>
+#include <RecoDataProducts/inc/StrawDigi.hh>
+#include <RecoDataProducts/inc/StrawDigiCollection.hh>
+#include <RecoDataProducts/inc/TriggerInfo.hh>
 
+#include <MCDataProducts/inc/ProtonBunchIntensity.hh>
 #include <MCDataProducts/inc/SimParticle.hh>
 #include <MCDataProducts/inc/SimParticleCollection.hh>
-#include <MCDataProducts/inc/StrawDigiMC.hh>
-#include <MCDataProducts/inc/StrawDigiMCCollection.hh>
 #include <MCDataProducts/inc/StepPointMC.hh>
 #include <MCDataProducts/inc/StepPointMCCollection.hh>
-#include <MCDataProducts/inc/ProtonBunchIntensity.hh>
-
+#include <MCDataProducts/inc/StrawDigiMC.hh>
+#include <MCDataProducts/inc/StrawDigiMCCollection.hh>
 
 #include <GlobalConstantsService/inc/ParticleDataTable.hh>
 
-//Utilities
-#include <Mu2eUtilities/inc/TriggerResultsNavigator.hh>
+// Utilities
 #include <Mu2eUtilities/inc/HelixTool.hh>
+#include <Mu2eUtilities/inc/TriggerResultsNavigator.hh>
 
-//OTS:
+// OTS:
 #include "otsdaq-dqm-tracker/ArtModules/BeamMonitorRootObjects.h"
-#include "otsdaq/MessageFacility/MessageFacility.h"
 #include "otsdaq/Macros/CoutMacros.h"
 #include "otsdaq/Macros/ProcessorPluginMacros.h"
+#include "otsdaq/MessageFacility/MessageFacility.h"
 #include "otsdaq/NetworkUtilities/TCPPublishServer.h"
-//C++:
+// C++:
 #include <algorithm>
 #include <functional>
 #include <initializer_list>
@@ -94,199 +93,196 @@
 
 #define TRACE_NAME "BeamMonitor"
 
-namespace ots
-{
-	class BeamMonitor : public art::EDAnalyzer
-	{
-	public:
-		explicit BeamMonitor(fhicl::ParameterSet const& pset);
-		virtual ~BeamMonitor();
+namespace ots {
+class BeamMonitor : public art::EDAnalyzer {
+public:
+  explicit BeamMonitor(fhicl::ParameterSet const &pset);
+  virtual ~BeamMonitor();
 
-		void analyze(art::Event const& e) override;
-		void beginRun(art::Run const&) override;
-		void beginJob() override;
-		void endJob() override;
+  void analyze(art::Event const &e) override;
+  void beginRun(art::Run const &) override;
+  void beginJob() override;
+  void endJob() override;
 
-		void PlotOccupancy(art::Event const& e);
-	private:
-		art::RunNumber_t current_run_;
-		std::string outputFileName_;
-		art::ServiceHandle<art::TFileService> tfs;
+  void PlotOccupancy(art::Event const &e);
 
-		struct  trigInfo_ {
-			int           counts;
-			int           exclusive_counts;
-			std::string   label;
+private:
+  art::RunNumber_t current_run_;
+  std::string outputFileName_;
+  art::ServiceHandle<art::TFileService> tfs;
 
-			trigInfo_() :counts(0), exclusive_counts(0) {}
-		};
+  struct trigInfo_ {
+    int counts;
+    int exclusive_counts;
+    std::string label;
 
-		trigInfo_* trigInfo;
-		bool writeOutput_;
-		bool doStreaming_;
-		bool overwrite_mode_;
+    trigInfo_() : counts(0), exclusive_counts(0) {}
+  };
 
-		art::InputTag _trigAlgTag;
-		std::vector<std::string>  _trigPaths;
-		art::InputTag _evtWeightTag;
-		art::InputTag _cdTag;
-		art::InputTag _sdTag;
-		art::InputTag _HelTag;
-		double _duty_cycle;
-		string _processName;
+  trigInfo_ *trigInfo;
+  bool writeOutput_;
+  bool doStreaming_;
+  bool overwrite_mode_;
 
-		float _nProcess;
-		size_t _nTrackTrig;
-		size_t _nCaloTrig;
-		double _bz0;
-		double _nPOT;
+  art::InputTag _trigAlgTag;
+  std::vector<std::string> _trigPaths;
+  art::InputTag _evtWeightTag;
+  art::InputTag _cdTag;
+  art::InputTag _sdTag;
+  art::InputTag _HelTag;
+  double _duty_cycle;
+  string _processName;
 
-		const mu2e::Tracker* _tracker;
-		const mu2e::StrawDigiCollection* SDCol;
-		const mu2e::CaloDigiCollection* CDCol;
-		const mu2e::HelixSeedCollection* HelCol;
-		const art::Event* _event;
-		BeamMonitorRootObjects* rootobjects = new BeamMonitorRootObjects("occ_plots");
-		TCPPublishServer* tcp;
-		void findTrigIndex(std::vector<trigInfo_>& Vec, std::string& ModuleLabel, int& Index);
+  float _nProcess;
+  size_t _nTrackTrig;
+  size_t _nCaloTrig;
+  double _bz0;
+  double _nPOT;
 
-	};
-}
+  const mu2e::Tracker *_tracker;
+  const mu2e::StrawDigiCollection *SDCol;
+  const mu2e::CaloDigiCollection *CDCol;
+  const mu2e::HelixSeedCollection *HelCol;
+  const art::Event *_event;
+  BeamMonitorRootObjects *rootobjects = new BeamMonitorRootObjects("occ_plots");
+  TCPPublishServer *tcp;
+  void findTrigIndex(std::vector<trigInfo_> &Vec, std::string &ModuleLabel,
+                     int &Index);
+};
+} // namespace ots
 
-ots::BeamMonitor::BeamMonitor(fhicl::ParameterSet const& pset)
-	: art::EDAnalyzer(pset),
-	current_run_(0),
-	outputFileName_(pset.get<std::string>("fileName", "otsdaqBeamMonitorDQM.root")),
-	writeOutput_(pset.get<bool>("write_to_file", true)),
-	doStreaming_(pset.get<bool>("stream_to_screen", true)),
-	overwrite_mode_(pset.get<bool>("overwrite_output_file", true)),
-	_trigPaths(pset.get<std::vector<std::string>>("triggerPathsList")),
-	_evtWeightTag(pset.get<art::InputTag>("protonBunchIntensity", "protonBunchIntensity")),
-	_cdTag(pset.get<art::InputTag>("caloDigiCollection", "CaloDigiFromShower")),
-	_sdTag(pset.get<art::InputTag>("strawDigiCollection", "makeSD")),
-	_HelTag(pset.get<art::InputTag>("HelixSeedCollection", "TTHelixMergerDeM")),
-	_duty_cycle(pset.get<float>("dutyCycle", 1.)),
-	_processName(pset.get<string>("processName", "globalTrigger2")),
-	_nProcess(pset.get<float>("nEventsProcessed", 1.)),
-	_nTrackTrig(pset.get<size_t>("nTrackTriggers", 4)),
-	_nCaloTrig(pset.get<size_t>("nCaloTriggers", 4)),
-	tcp(new TCPPublishServer(pset.get<int>("listenPort", 6000)))
-{
-	TLOG(TLVL_INFO) << "Occuapncy Plotter construction is beginning ";
+ots::BeamMonitor::BeamMonitor(fhicl::ParameterSet const &pset)
+    : art::EDAnalyzer(pset), current_run_(0),
+      outputFileName_(
+          pset.get<std::string>("fileName", "otsdaqBeamMonitorDQM.root")),
+      writeOutput_(pset.get<bool>("write_to_file", true)),
+      doStreaming_(pset.get<bool>("stream_to_screen", true)),
+      overwrite_mode_(pset.get<bool>("overwrite_output_file", true)),
+      _trigPaths(pset.get<std::vector<std::string>>("triggerPathsList")),
+      _evtWeightTag(pset.get<art::InputTag>("protonBunchIntensity",
+                                            "protonBunchIntensity")),
+      _cdTag(
+          pset.get<art::InputTag>("caloDigiCollection", "CaloDigiFromShower")),
+      _sdTag(pset.get<art::InputTag>("strawDigiCollection", "makeSD")),
+      _HelTag(
+          pset.get<art::InputTag>("HelixSeedCollection", "TTHelixMergerDeM")),
+      _duty_cycle(pset.get<float>("dutyCycle", 1.)),
+      _processName(pset.get<string>("processName", "globalTrigger2")),
+      _nProcess(pset.get<float>("nEventsProcessed", 1.)),
+      _nTrackTrig(pset.get<size_t>("nTrackTriggers", 4)),
+      _nCaloTrig(pset.get<size_t>("nCaloTriggers", 4)),
+      tcp(new TCPPublishServer(pset.get<int>("listenPort", 6000))) {
+  TLOG(TLVL_INFO) << "Occuapncy Plotter construction is beginning ";
 
-	TLOG(TLVL_DEBUG) << "TriggerRate Plotter construction complete";
+  TLOG(TLVL_DEBUG) << "TriggerRate Plotter construction complete";
 }
 
 ots::BeamMonitor::~BeamMonitor() {}
 
-
-
 void ots::BeamMonitor::beginJob() {
-	TLOG(TLVL_INFO) << "Started";
-	rootobjects->BookHistos(tfs, _nTrackTrig, _nCaloTrig);
+  TLOG(TLVL_INFO) << "Started";
+  rootobjects->BookHistos(tfs, _nTrackTrig, _nCaloTrig);
 }
 
-void ots::BeamMonitor::analyze(art::Event const& event)
-{
-	TLOG(TLVL_INFO) << "BeamMonitor Plotting Module is Analyzing Event #  " << event.event();
-	double value = 1;
-	//get the StrawDigi Collection
-	art::Handle<mu2e::StrawDigiCollection> sdH;
-	event.getByLabel(_sdTag, sdH);
-	if (sdH.isValid()) {
-		SDCol = sdH.product();
-	}
+void ots::BeamMonitor::analyze(art::Event const &event) {
+  TLOG(TLVL_INFO) << "BeamMonitor Plotting Module is Analyzing Event #  "
+                  << event.event();
+  double value = 1;
+  // get the StrawDigi Collection
+  art::Handle<mu2e::StrawDigiCollection> sdH;
+  event.getByLabel(_sdTag, sdH);
+  if (sdH.isValid()) {
+    SDCol = sdH.product();
+  }
 
-	//get the CaloDigi Collection
-	art::Handle<mu2e::CaloDigiCollection> cdH;
-	event.getByLabel(_cdTag, cdH);
-	if (cdH.isValid()) {
-		CDCol = cdH.product();
-	}
+  // get the CaloDigi Collection
+  art::Handle<mu2e::CaloDigiCollection> cdH;
+  event.getByLabel(_cdTag, cdH);
+  if (cdH.isValid()) {
+    CDCol = cdH.product();
+  }
 
-	//get the HelixSeed Collection
-	art::Handle<mu2e::HelixSeedCollection> hsH;
-	event.getByLabel(_HelTag, hsH);
-	if (hsH.isValid()) {
-		HelCol = hsH.product();
-	}
+  // get the HelixSeed Collection
+  art::Handle<mu2e::HelixSeedCollection> hsH;
+  event.getByLabel(_HelTag, hsH);
+  if (hsH.isValid()) {
+    HelCol = hsH.product();
+  }
 
+  _nPOT = -1.;
+  art::Handle<mu2e::ProtonBunchIntensity> evtWeightH;
+  event.getByLabel(_evtWeightTag, evtWeightH);
+  if (evtWeightH.isValid()) {
+    _nPOT = (double)evtWeightH->intensity();
+  }
 
-	_nPOT = -1.;
-	art::Handle<mu2e::ProtonBunchIntensity> evtWeightH;
-	event.getByLabel(_evtWeightTag, evtWeightH);
-	if (evtWeightH.isValid()) {
-		_nPOT = (double)evtWeightH->intensity();
-	}
+  art::InputTag const tag{Form("TriggerResults::%s", _processName.c_str())};
+  auto const trigResultsH = event.getValidHandle<art::TriggerResults>(tag);
+  const art::TriggerResults *trigResults = trigResultsH.product();
+  mu2e::TriggerResultsNavigator trigNavig(trigResults);
 
-	art::InputTag const tag{ Form("TriggerResults::%s", _processName.c_str()) };
-	auto const trigResultsH = event.getValidHandle<art::TriggerResults>(tag);
-	const art::TriggerResults* trigResults = trigResultsH.product();
-	mu2e::TriggerResultsNavigator   trigNavig(trigResults);
+  for (unsigned int i = 0; i < _trigPaths.size(); ++i) {
+    string &path = _trigPaths.at(i);
+    if (trigNavig.accepted(path)) {
+      std::vector<std::string> moduleNames = trigNavig.triggerModules(path);
 
-	for (unsigned int i = 0; i < _trigPaths.size(); ++i) {
-		string& path = _trigPaths.at(i);
-		if (trigNavig.accepted(path)) {
-			std::vector<std::string>      moduleNames = trigNavig.triggerModules(path);
+      for (size_t j = 0; j < moduleNames.size(); ++j) {
+        std::string moduleLabel = moduleNames[j];
+        int index_all(0);
+        int index(0);
 
-			for (size_t j = 0; j < moduleNames.size(); ++j) {
-				std::string  moduleLabel = moduleNames[j];
-				int          index_all(0);
-				int          index(0);
+        if (moduleLabel.find("tprHelixIPADeMHSFilter") !=
+            std::string::npos) { // TODO Add in IPAname haere
+          // findTrigIndex(_trigTrack, moduleLabel, index);
+          //_trigTrack[index].label  = moduleLabel;
+          //_trigTrack[index].counts = _trigTrack[index].counts + 1;
+          cout << "Helix Size" << HelCol->size() << endl;
+          for (unsigned int i = 0; i < HelCol->size(); i++) {
+            mu2e::HelixSeed const &hseed = (*HelCol)[i];
+            // if(hseed) {
+            // fillTrackTrigInfo(index, kseed, _trkHist);
 
-				if (moduleLabel.find("tprHelixIPADeMHSFilter") != std::string::npos) {//TODO Add in IPAname haere
-					//findTrigIndex(_trigTrack, moduleLabel, index);
-					//_trigTrack[index].label  = moduleLabel;
-					//_trigTrack[index].counts = _trigTrack[index].counts + 1;
-					cout << "Helix Size" << HelCol->size() << endl;
-					for (unsigned int i = 0; i < HelCol->size(); i++) {
-						mu2e::HelixSeed const& hseed = (*HelCol)[i];
-						// if(hseed) {
-							// fillTrackTrigInfo(index, kseed, _trkHist);
+            if (_nPOT < 0)
+              return;
+            int nSD(-1), nCD(-1);
+            if (SDCol)
+              nSD = SDCol->size();
+            if (CDCol)
+              nCD = CDCol->size();
+            int Index = _nTrackTrig + _nCaloTrig;
+            rootobjects->Hist._hOccInfo[Index][0]->Fill(_nPOT);
 
-						if (_nPOT < 0)  return;
-						int   nSD(-1), nCD(-1);
-						if (SDCol) nSD = SDCol->size();
-						if (CDCol) nCD = CDCol->size();
-						int Index = _nTrackTrig + _nCaloTrig;
-						rootobjects->Hist._hOccInfo[Index][0]->Fill(_nPOT);
+            rootobjects->Hist._h2DOccInfo[Index][0]->Fill(_nPOT, nSD);
+            rootobjects->Hist._h2DOccInfo[Index][1]->Fill(_nPOT, nCD);
 
-						rootobjects->Hist._h2DOccInfo[Index][0]->Fill(_nPOT, nSD);
-						rootobjects->Hist._h2DOccInfo[Index][1]->Fill(_nPOT, nCD);
-
-						TBufferFile message(TBuffer::kWrite);
-						message.WriteObject(rootobjects->Hist._hOccInfo[0][0]);//TODO - make the consumer see allhistograms
-						tcp->broadcastPacket(message.Buffer(), message.Length());
-					}
-				}
-			}
-		}
-	}
+            TBufferFile message(TBuffer::kWrite);
+            message.WriteObject(
+                rootobjects->Hist._hOccInfo[0][0]); // TODO - make the consumer
+                                                    // see allhistograms
+            tcp->broadcastPacket(message.Buffer(), message.Length());
+          }
+        }
+      }
+    }
+  }
 }
 
-void   ots::BeamMonitor::findTrigIndex(std::vector<trigInfo_>& Vec, std::string& ModuleLabel, int& Index) {
-	//reset the index value
-	Index = 0;
-	for (size_t i = 0; i < Vec.size(); ++i) {
-		if (Vec[i].label == ModuleLabel) {
-			Index = i;
-			break;
-		}
-		else if (Vec[i].label != "") {
-			Index = i + 1;
-		}
-	}
+void ots::BeamMonitor::findTrigIndex(std::vector<trigInfo_> &Vec,
+                                     std::string &ModuleLabel, int &Index) {
+  // reset the index value
+  Index = 0;
+  for (size_t i = 0; i < Vec.size(); ++i) {
+    if (Vec[i].label == ModuleLabel) {
+      Index = i;
+      break;
+    } else if (Vec[i].label != "") {
+      Index = i + 1;
+    }
+  }
 }
 
-void ots::BeamMonitor::endJob() {
-	TLOG(TLVL_INFO) << "Completed";
-}
+void ots::BeamMonitor::endJob() { TLOG(TLVL_INFO) << "Completed"; }
 
-void ots::BeamMonitor::beginRun(const art::Run& run) {
-
-}
-
-
-
+void ots::BeamMonitor::beginRun(const art::Run &run) {}
 
 DEFINE_ART_MODULE(ots::BeamMonitor)

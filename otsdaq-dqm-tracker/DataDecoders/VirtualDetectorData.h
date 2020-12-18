@@ -3,16 +3,14 @@
 
 #include <string>
 
-namespace ots
-{
-class VirtualDetectorData
-{
-  public:
-	VirtualDetectorData(void);
-	virtual ~VirtualDetectorData(void);
+namespace ots {
+class VirtualDetectorData {
+public:
+  VirtualDetectorData(void);
+  virtual ~VirtualDetectorData(void);
 
-  protected:
+protected:
 };
-}
+} // namespace ots
 
 #endif
