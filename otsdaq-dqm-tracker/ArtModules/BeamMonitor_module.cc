@@ -51,7 +51,6 @@
 #include <GeometryService/inc/GeomHandle.hh>
 #include <RecoDataProducts/inc/CaloCluster.hh>
 #include <RecoDataProducts/inc/CaloDigi.hh>
-#include <RecoDataProducts/inc/CaloDigiCollection.hh>
 #include <RecoDataProducts/inc/CaloTrigSeed.hh>
 #include <RecoDataProducts/inc/ComboHit.hh>
 #include <RecoDataProducts/inc/HelixSeed.hh>
@@ -75,7 +74,7 @@
 #include <Mu2eUtilities/inc/TriggerResultsNavigator.hh>
 
 // OTS:
-#include "otsdaq-dqm-tracker/ArtModules/BeamMonitorRootObjects.h"
+#include "otsdaq-dqm-tracker/ArtModules/OccupancyRootObjects.h"
 #include "otsdaq/Macros/CoutMacros.h"
 #include "otsdaq/Macros/ProcessorPluginMacros.h"
 #include "otsdaq/MessageFacility/MessageFacility.h"
@@ -144,7 +143,7 @@ private:
   const mu2e::CaloDigiCollection *CDCol;
   const mu2e::HelixSeedCollection *HelCol;
   const art::Event *_event;
-  BeamMonitorRootObjects *rootobjects = new BeamMonitorRootObjects("occ_plots");
+  OccupancyRootObjects *rootobjects = new OccupancyRootObjects("bm_plots");
   TCPPublishServer *tcp;
   void findTrigIndex(std::vector<trigInfo_> &Vec, std::string &ModuleLabel,
                      int &Index);

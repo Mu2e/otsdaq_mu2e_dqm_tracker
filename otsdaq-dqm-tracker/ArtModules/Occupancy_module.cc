@@ -51,7 +51,6 @@
 #include <GeometryService/inc/GeomHandle.hh>
 #include <RecoDataProducts/inc/CaloCluster.hh>
 #include <RecoDataProducts/inc/CaloDigi.hh>
-#include <RecoDataProducts/inc/CaloDigiCollection.hh>
 #include <RecoDataProducts/inc/CaloTrigSeed.hh>
 #include <RecoDataProducts/inc/ComboHit.hh>
 #include <RecoDataProducts/inc/HelixSeed.hh>
