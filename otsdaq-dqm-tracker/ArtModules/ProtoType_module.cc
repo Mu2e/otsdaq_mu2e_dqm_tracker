@@ -61,6 +61,7 @@
 #include <RecoDataProducts/inc/StrawDigi.hh>
 #include <RecoDataProducts/inc/StrawDigiCollection.hh>
 #include <RecoDataProducts/inc/TriggerInfo.hh>
+#include <RecoDataProducts/inc/CaloDigi.hh>
 
 #include <MCDataProducts/inc/ProtonBunchIntensity.hh>
 #include <MCDataProducts/inc/SimParticle.hh>
