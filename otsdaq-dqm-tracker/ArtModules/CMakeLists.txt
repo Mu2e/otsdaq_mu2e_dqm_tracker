@@ -7,7 +7,7 @@ art_make( BASENAME_ONLY
  ${CANVAS_PERSISTENCY_PROVENANCE}
  LIB_LIBRARIES
 canvas
- otsdaq-dqm_Overlays
+ mu2e-artdaq-core_Overlays
  artdaq-core_Utilities
  artdaq_ArtModules
  artdaq-core_Data
