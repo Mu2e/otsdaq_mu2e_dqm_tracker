@@ -161,8 +161,7 @@ void ots::TrackerDQM::analyze(art::Event const& event) {
 						static_cast<uint16_t>(trkData.first->TDC1()) };
 					mu2e::TrkTypes::TOTValues tot = { trkData.first->TOT0,
 													 trkData.first->TOT1 };
-					mu2e::TrkTypes::ADCWaveform adcs;
-					std::copy_n(trkData.second.begin(), adcs.size(), adcs.begin());
+					mu2e::TrkTypes::ADCWaveform adcs(trkData.second.begin(), trkData.second.end());
 
 					for (std::string name : histType_) {
 						if (name == "pedestal") {
