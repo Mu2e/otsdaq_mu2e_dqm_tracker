@@ -10,10 +10,15 @@ namespace ots {
 
 int pedestal_est(mu2e::TrkTypes::ADCWaveform adc) {
   int sum{0};
-  for (int i = 0; i < 3; ++i) {
+
+  if (adc.size() == 0) return 0;
+
+  size_t i_max = adc.size() > 3 ? 3 : adc.size();
+
+  for (size_t i = 0; i < i_max; ++i) {
     sum += adc[i];
   }
-  int average = sum / 3;
+  int average = sum / i_max;
   return average;
 }
 
