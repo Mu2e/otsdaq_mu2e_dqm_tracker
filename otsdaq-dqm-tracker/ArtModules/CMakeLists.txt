@@ -102,6 +102,7 @@ simple_plugin(TrackerDQM "module"
         artdaq-core_Data
         artdaq-core_Core
 	mu2e-artdaq-core_Overlays
+otsdaq-mu2e_ArtModules
     DTCInterface
     ${ROOT_CORE}
     ${ROOT_GPAD}
