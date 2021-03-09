@@ -53,17 +53,14 @@ void straw_fill(HistoContainer *histos, int data, std::string title,
       if ((sid.straw() == histos->histograms[histIdx].straw) &&
           (sid.panel() == histos->histograms[histIdx].panel) &&
           (sid.plane() == histos->histograms[histIdx].plane) &&
-          (sid.station() ==
-           histos->histograms[histIdx]
-               .station)) { // if the histogram does exist, fill it
+          (sid.station() == histos->histograms[histIdx].station)) { // if the histogram does exist, fill it
         histos->histograms[histIdx]._Hist->Fill(data);
         __MOUT__ << "number of histos: " << histos->histograms.size()
                  << std::endl;
         break;
       }
 
-      if (histIdx == int(histos->histograms.size() -
-                         1)) { // if the histogram doesn't exist, book it
+      if (histIdx == int(histos->histograms.size() - 1)) { // if the histogram doesn't exist, book it
         // histos->BookHistos(tfs, title.c_str() + std::to_string(sid.station())
         // + " " + std::to_string(sid.plane()) + " " +
         // std::to_string(sid.panel()) + " " + std::to_string(sid.straw()), sid);

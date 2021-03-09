@@ -160,8 +160,7 @@ void ots::TrackerDQM::analyze(art::Event const& event) {
 
 	  for (std::string name : histType_) {
 	    if (name == "pedestal") {
-	      straw_fill(pedestal_histos, pedestal_est(adcs), "Pedestal", tfs,
-			 sid);
+	      straw_fill(pedestal_histos, pedestal_est(adcs), "Pedestal", tfs, sid);
 	    }
 	    else if (name == "strawHits") {
 	      panel_fill(straw_histos, sid.straw(), "Straw Hits", tfs, sid);
