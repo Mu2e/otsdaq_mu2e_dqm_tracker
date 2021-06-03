@@ -151,11 +151,8 @@ void ots::TrackerDQM::analyze(art::Event const& event) {
 
 	for (auto& trkData : trkDatas) {
 	  mu2e::StrawId sid(trkData.first->StrawIndex);
-	  mu2e::TrkTypes::TDCValues tdc = {
-	    static_cast<uint16_t>(trkData.first->TDC0()),
-	    static_cast<uint16_t>(trkData.first->TDC1()) };
-	  mu2e::TrkTypes::TOTValues tot = { trkData.first->TOT0,
-					    trkData.first->TOT1 };
+	  //mu2e::TrkTypes::TDCValues tdc = {	    static_cast<uint16_t>(trkData.first->TDC0()),	    static_cast<uint16_t>(trkData.first->TDC1()) };
+	  //mu2e::TrkTypes::TOTValues tot = { trkData.first->TOT0,					    trkData.first->TOT1 };
 	  mu2e::TrkTypes::ADCWaveform adcs(trkData.second.begin(), trkData.second.end());
 
 	  for (std::string name : histType_) {

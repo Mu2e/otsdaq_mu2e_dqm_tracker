@@ -170,7 +170,7 @@ void ots::Occupancy::beginJob() {
 void ots::Occupancy::analyze(art::Event const &event) {
   TLOG(TLVL_INFO) << "Occupancy Plotting Module is Analyzing Event #  "
                   << event.event();
-  double value = 1;
+  //double value = 1;
   // get the StrawDigi Collection
   art::Handle<mu2e::StrawDigiCollection> sdH;
   event.getByLabel(_sdTag, sdH);

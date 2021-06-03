@@ -186,7 +186,7 @@ void ots::BeamMonitor::beginJob() {
 void ots::BeamMonitor::analyze(art::Event const &event) {
   TLOG(TLVL_INFO) << "BeamMonitor Plotting Module is Analyzing Event #  "
                   << event.event();
-  double value = 1;
+ // double value = 1;
   // get the StrawDigi Collection
   art::Handle<mu2e::StrawDigiCollection> sdH;
   event.getByLabel(_sdTag, sdH);
@@ -227,8 +227,8 @@ void ots::BeamMonitor::analyze(art::Event const &event) {
 
       for (size_t j = 0; j < moduleNames.size(); ++j) {
         std::string moduleLabel = moduleNames[j];
-        int index_all(0);
-        int index(0);
+        //int index_all(0);
+        //int index(0);
 
         if (moduleLabel.find("tprHelixIPADeMHSFilter") !=
             std::string::npos) { // TODO Add in IPAname haere
@@ -237,7 +237,7 @@ void ots::BeamMonitor::analyze(art::Event const &event) {
           //_trigTrack[index].counts = _trigTrack[index].counts + 1;
           cout << "Helix Size" << HelCol->size() << endl;
           for (unsigned int i = 0; i < HelCol->size(); i++) {
-            mu2e::HelixSeed const &hseed = (*HelCol)[i];
+           // mu2e::HelixSeed const &hseed = (*HelCol)[i];
             // if(hseed) {
             // fillTrackTrigInfo(index, kseed, _trkHist);
 
