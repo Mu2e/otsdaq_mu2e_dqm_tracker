@@ -140,7 +140,7 @@ void ots::TrackerDQM::analyze(art::Event const& event) {
 	continue;
       }
       auto hdr = block_data->GetHeader();
-      if (hdr.GetPacketCount() > 0) {
+      if (hdr->GetPacketCount() > 0) {
 	auto trkDatas = cc.GetTrackerData(curBlockIdx);
 	if (trkDatas.empty()) {
 	  mf::LogError("TrackerDQM")
