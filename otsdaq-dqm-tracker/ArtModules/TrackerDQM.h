@@ -1,6 +1,6 @@
 // Some functions for producing histograms in trackerDQM. Author E. Croft
-#include "DataProducts/inc/StrawId.hh"
-#include "DataProducts/inc/TrkTypes.hh"
+#include "Offline/DataProducts/inc/StrawId.hh"
+#include "Offline/DataProducts/inc/TrkTypes.hh"
 #include "art/Framework/Core/ModuleMacros.h"
 #include "art_root_io/TFileService.h"
 #include "otsdaq-dqm-tracker/ArtModules/HistoContainer.h"

@@ -36,42 +36,34 @@
 #include <TProfile.h>
 
 // Offline:
-#include <ConditionsService/inc/AcceleratorParams.hh>
-#include <ConditionsService/inc/ConditionsHandle.hh>
+#include <Offline/ConditionsService/inc/AcceleratorParams.hh>
+#include <Offline/ConditionsService/inc/ConditionsHandle.hh>
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wtype-limits"
 #pragma GCC diagnostic ignored "-Wpedantic"
-#include <BFieldGeom/inc/BFieldManager.hh>
-#include <TrackerGeom/inc/Tracker.hh>
+#include <Offline/BFieldGeom/inc/BFieldManager.hh>
+#include <Offline/TrackerGeom/inc/Tracker.hh>
 //#include <GlobalConstantsService/inc/GlobalConstantsHandle.hh">
 #pragma GCC diagnostic pop
 
-#include <DataProducts/inc/XYZVec.hh>
-#include <GeometryService/inc/DetectorSystem.hh>
-#include <GeometryService/inc/GeomHandle.hh>
-#include <RecoDataProducts/inc/CaloCluster.hh>
-#include <RecoDataProducts/inc/CaloDigi.hh>
-#include <RecoDataProducts/inc/CaloTrigSeed.hh>
-#include <RecoDataProducts/inc/ComboHit.hh>
-#include <RecoDataProducts/inc/HelixSeed.hh>
-#include <RecoDataProducts/inc/KalSeed.hh>
-#include <RecoDataProducts/inc/StrawDigi.hh>
-#include <RecoDataProducts/inc/StrawDigiCollection.hh>
-#include <RecoDataProducts/inc/TriggerInfo.hh>
+#include <Offline/DataProducts/inc/XYZVec.hh>
+#include <Offline/GeometryService/inc/DetectorSystem.hh>
+#include <Offline/GeometryService/inc/GeomHandle.hh>
+#include <Offline/RecoDataProducts/inc/CaloCluster.hh>
+#include <Offline/RecoDataProducts/inc/CaloDigi.hh>
+#include <Offline/RecoDataProducts/inc/CaloTrigSeed.hh>
+#include <Offline/RecoDataProducts/inc/ComboHit.hh>
+#include <Offline/RecoDataProducts/inc/HelixSeed.hh>
+#include <Offline/RecoDataProducts/inc/KalSeed.hh>
+#include <Offline/RecoDataProducts/inc/StrawDigi.hh>
+#include <Offline/RecoDataProducts/inc/StrawDigiCollection.hh>
+#include <Offline/RecoDataProducts/inc/TriggerInfo.hh>
 
-#include <MCDataProducts/inc/ProtonBunchIntensity.hh>
-#include <MCDataProducts/inc/SimParticle.hh>
-#include <MCDataProducts/inc/SimParticleCollection.hh>
-#include <MCDataProducts/inc/StepPointMC.hh>
-#include <MCDataProducts/inc/StepPointMCCollection.hh>
-#include <MCDataProducts/inc/StrawDigiMC.hh>
-#include <MCDataProducts/inc/StrawDigiMCCollection.hh>
-
-#include <GlobalConstantsService/inc/ParticleDataTable.hh>
+#include <Offline/MCDataProducts/inc/ProtonBunchIntensity.hh>
+#include <Offline/GlobalConstantsService/inc/ParticleDataTable.hh>
 
 // Utilities
-#include <Mu2eUtilities/inc/HelixTool.hh>
-#include <Mu2eUtilities/inc/TriggerResultsNavigator.hh>
+#include <Offline/Mu2eUtilities/inc/TriggerResultsNavigator.hh>
 
 // OTS:
 #include "otsdaq-dqm-tracker/ArtModules/OccupancyRootObjects.h"

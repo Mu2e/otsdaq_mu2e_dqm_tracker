@@ -1,7 +1,7 @@
 #ifndef _ProtoTypeHistos_h_
 #define _ProtoTypeHistos_h_
 
-#include "DataProducts/inc/StrawId.hh"
+#include "Offline/DataProducts/inc/StrawId.hh"
 #include "art/Framework/Services/Registry/ServiceHandle.h"
 #include "art_root_io/TFileDirectory.h"
 #include "art_root_io/TFileService.h"

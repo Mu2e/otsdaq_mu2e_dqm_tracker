@@ -20,12 +20,12 @@
 
 #include "mu2e-artdaq-core/Overlays/FragmentType.hh"
 #include "mu2e-artdaq-core/Overlays/TrackerFragment.hh"
-#include <RecoDataProducts/inc/StrawDigi.hh>
-#include <RecoDataProducts/inc/StrawDigiCollection.hh>
+#include <Offline/RecoDataProducts/inc/StrawDigi.hh>
+#include <Offline/RecoDataProducts/inc/StrawDigiCollection.hh>
 #include <artdaq-core/Data/Fragment.hh>
 
-#include "DataProducts/inc/StrawId.hh"
-#include "DataProducts/inc/TrkTypes.hh"
+#include "Offline/DataProducts/inc/StrawId.hh"
+#include "Offline/DataProducts/inc/TrkTypes.hh"
 
 namespace ots {
   class TrackerDQM : public art::EDAnalyzer {
