@@ -1,7 +1,7 @@
 # The parent line must be the first non-comment line in the file
 # This line defines the product name and version
 parent otsdaq_mu2e_dqm_tracker
-defaultqual	e20:s105
+defaultqual	e20:s112
 
 # These optional lines define the installed directories where
 # headers, libraries, and executables will be found
@@ -18,9 +18,9 @@ fcldir      fq_dir      fcl
 
 #
 product			version		optional
-otsdaq_mu2e		v1_01_02
-offline			v10_02_00
-cetbuildtools	v8_13_04	-	only_for_build
+otsdaq_mu2e		v1_01_03
+offline			v10_06_00
+cetmodules		v2_26_00	-	only_for_build
 end_product_list
 
 # -nq- here means there is no qualifier

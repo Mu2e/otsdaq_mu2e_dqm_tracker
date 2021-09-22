@@ -10,17 +10,14 @@
 # use cmake 3.17 or later
 cmake_minimum_required (VERSION 3.17)
 
-find_package(cetbuildtools)
-project(otsdaq_mu2e_dqm_tracker VERSION 1.01.01)
-# cetbuildtools contains our cmake modules
-SET ( CETBUILDTOOLS_VERSION $ENV{CETBUILDTOOLS_VERSION} )
-IF (NOT CETBUILDTOOLS_VERSION)
-    MESSAGE (FATAL_ERROR "ERROR: setup cetbuildtools to get the cmake modules")
-ENDIF()
+find_package(cetmodules)
+set(CET_CETBUILDTOOLS_COMPAT TRUE)
+include(Compatibility)
+set(CET_WARN_DEPRECATED)
+
+project(otsdaq_mu2e_dqm_tracker VERSION 1.01.03)
 
 set(CMAKE_MODULE_PATH
-        $ENV{ART_DIR}/Modules
-        $ENV{CETBUILDTOOLS_DIR}/Modules
         $ENV{XDAQ_DIR}/Modules
         $ENV{ARTDAQ_UTILITIES_DIR}/Modules
         ${CMAKE_MODULE_PATH})
@@ -51,7 +48,7 @@ find_ups_product( artdaq v0_04_02 )
 find_ups_product( artdaq_core v1_00_00 )
 find_ups_product( artdaq_utilities v1_00_00 )
 #find_ups_product( art v1_06_00 )
-#find_ups_product( TRACE v3_15_00 )
+find_ups_product( TRACE v3_15_00 )
 #find_ups_product( fhiclcpp v2_16_00 )
 #find_ups_product( messagefacility v1_10_00 )
 #find_ups_product( cetlib v1_03_00 )
@@ -116,9 +113,6 @@ add_subdirectory(test)
 # Documentation directory
 #add_subdirectory(doc)
 
-# UPS
-add_subdirectory(ups)
-
 # Data
 #FILE(COPY ConfigurationDataExamples DESTINATION Data)
 #INSTALL(DIRECTORY ConfigurationDataExamples DESTINATION ${product}/${version}/Data)
@@ -153,5 +147,4 @@ add_subdirectory(ups)
 #INSTALL(DIRECTORY DESTINATION ${product}/${version}/Data/ServiceData/LogbookData/logbooks)
 #INSTALL(DIRECTORY DESTINATION ${product}/${version}/Data/ServiceData/LogbookData/previews)
 
-# packaging utility
-include(UseCPack)
+cet_cmake_config()

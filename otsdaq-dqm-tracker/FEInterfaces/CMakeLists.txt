@@ -1,3 +1,3 @@
-simple_plugin(FEHistoMakerInterface "interface"
+basic_plugin(FEHistoMakerInterface "interface"
   otsdaq::FECore
 )
