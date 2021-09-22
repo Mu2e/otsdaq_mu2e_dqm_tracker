@@ -57,10 +57,10 @@ find_ups_product( otsdaq_mu2e v1_00_00 )
 #find_ups_product( otsdaq_utilities v1_00_00 )
 #find_ups_product( otsdaq_components v1_00_00 )
 find_ups_root( v6_22_02 )
-#find_ups_boost( v1_50_0 filesystem
-#                        program_options
-#                        unit_test_framework
-# )
+find_ups_boost( v1_50_0 filesystem
+                       program_options
+                        unit_test_framework
+ )
 find_ups_product( offline v10_00_00 )
 link_directories($ENV{OFFLINE_LIB})
 find_ups_product( BTrk v1_02_02 )

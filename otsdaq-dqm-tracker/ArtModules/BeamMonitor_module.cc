@@ -46,7 +46,6 @@
 //#include <GlobalConstantsService/inc/GlobalConstantsHandle.hh">
 #pragma GCC diagnostic pop
 
-#include <Offline/DataProducts/inc/XYZVec.hh>
 #include <Offline/GeometryService/inc/DetectorSystem.hh>
 #include <Offline/GeometryService/inc/GeomHandle.hh>
 #include <Offline/RecoDataProducts/inc/CaloCluster.hh>
