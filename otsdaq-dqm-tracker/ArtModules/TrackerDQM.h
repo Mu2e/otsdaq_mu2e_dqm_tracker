@@ -22,7 +22,7 @@ int pedestal_est(mu2e::TrkTypes::ADCWaveform adc) {
   return average;
 }
 
-unsigned short max_adc(mu2e::TrkTypes::ADCWaveform adcs) {
+unsigned short max_adc(const mu2e::TrkTypes::ADCWaveform &adcs) {
   unsigned short maxadc{0};
 
   for (auto adc : adcs) {
@@ -36,7 +36,7 @@ unsigned short max_adc(mu2e::TrkTypes::ADCWaveform adcs) {
 
 
 
-void summary_fill(TrackerDQMHistoContainer *histos,  art::ServiceHandle<art::TFileService> tfs, mu2e::StrawId sid) {
+void summary_fill(TrackerDQMHistoContainer *histos,  const mu2e::StrawId& sid) {
   //  __MOUT__ << "filling Summary histograms..."<< std::endl;
 
   if (histos->histograms.size() == 0) {
@@ -51,12 +51,12 @@ void summary_fill(TrackerDQMHistoContainer *histos,  art::ServiceHandle<art::TFi
 }
 
 
-void panel_fill(TrackerDQMHistoContainer *histos, int data, std::string title,
-                art::ServiceHandle<art::TFileService> tfs, mu2e::StrawId sid) {
-  __MOUT__ << title.c_str() + std::to_string(sid.plane()) + " " +
-                  std::to_string(sid.panel()) + " " +
-                  std::to_string(sid.straw())
-           << std::endl;
+void pedestal_fill(TrackerDQMHistoContainer *histos, int data, std::string title,
+		   const mu2e::StrawId& sid) {
+  // __MOUT__ << title.c_str() + "_"+std::to_string(sid.plane()) + " " 
+  //   + std::to_string(sid.panel()) + " " 
+  //   + std::to_string(sid.straw())
+  //          << std::endl;
 
   if (histos->histograms.size() == 0) {
     __MOUT__ << "No histograms booked. Should they have been created elsewhere?"
@@ -83,8 +83,8 @@ void panel_fill(TrackerDQMHistoContainer *histos, int data, std::string title,
   }
 }
 
-void pedestal_fill(TrackerDQMHistoContainer *histos, int data, std::string title,
-                art::ServiceHandle<art::TFileService> tfs, mu2e::StrawId sid) {
+void panel_fill(TrackerDQMHistoContainer *histos, std::string  title,
+                const mu2e::StrawId& sid) {
   if (histos->histograms.size() == 0) {
     __MOUT__ << "No histograms booked. Should they have been created elsewhere?"
              << std::endl;
@@ -95,7 +95,7 @@ void pedestal_fill(TrackerDQMHistoContainer *histos, int data, std::string title
 
       if ((sid.panel()   == histos->histograms[histIdx].panel) &&
           (sid.plane()   == histos->histograms[histIdx].plane) ) {
-        histos->histograms[histIdx]._Hist->Fill(data);
+        histos->histograms[histIdx]._Hist->Fill(sid.straw());
 	//	__MOUT__ << "[TrackerDWM::panel_fill] filled hist "<<sid.plane() <<", "<< sid.panel()<< std::endl;
 	foundHist = true;
         break;

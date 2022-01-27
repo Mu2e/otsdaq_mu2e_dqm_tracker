@@ -85,7 +85,7 @@ ots::TrackerDQM::TrackerDQM(Parameters const& conf)
   }
 
   for (std::string name : histType_) {
-    if (name == "pedestal") {
+    if (name == "pedestals") {
       doPedestalHist_ = true;
     }
     if (name == "panels") {
@@ -179,14 +179,14 @@ void  ots::TrackerDQM::analyze_tracker_(const mu2e::TrackerFragment& cc) {
 	//mu2e::TrkTypes::TDCValues tdc = {	    static_cast<uint16_t>(trkData.first->TDC0()),	    static_cast<uint16_t>(trkData.first->TDC1()) };
 	//mu2e::TrkTypes::TOTValues tot = { trkData.first->TOT0,					    trkData.first->TOT1 };
 	mu2e::TrkTypes::ADCWaveform adcs(trkData.second.begin(), trkData.second.end());
-	summary_fill(summary_histos, tfs, sid);
+	summary_fill(summary_histos, sid);
 		  
 	for (std::string name : histType_) {
 	  if (name == "pedestals") {
-	    pedestal_fill(pedestal_histos, pedestal_est(adcs), "Pedestal", tfs, sid);
+	    pedestal_fill(pedestal_histos, pedestal_est(adcs), "Pedestal", sid);
 	  }
 	  else if (name == "panels") {
-	    panel_fill(panel_histos, sid.straw(), "Panel", tfs, sid);
+	    panel_fill(panel_histos, "Panel", sid);
 	  } 
 	  else {
 	    __MOUT_ERR__ << "Unrecognized histogram type" << std::endl;
