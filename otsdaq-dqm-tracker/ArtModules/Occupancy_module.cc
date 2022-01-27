@@ -18,7 +18,7 @@
 
 #include "artdaq-core/Data/ContainerFragment.hh"
 #include "artdaq-core/Data/Fragment.hh"
-#include "artdaq/DAQdata/Globals.hh"
+//#include "artdaq/DAQdata/Globals.hh"
 
 #include "cetlib_except/exception.h"
 

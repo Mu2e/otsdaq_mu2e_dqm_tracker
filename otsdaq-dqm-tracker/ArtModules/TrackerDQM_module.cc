@@ -10,7 +10,7 @@
 #include <TBufferFile.h>
 #include <TH1F.h>
 
-#include "otsdaq-dqm-tracker/ArtModules/HistoContainer.h"
+#include "otsdaq-dqm-tracker/ArtModules/TrackerDQMHistoContainer.h"
 #include "otsdaq-dqm-tracker/ArtModules/TrackerDQM.h"
 #include "otsdaq/Macros/CoutMacros.h"
 #include "otsdaq/Macros/ProcessorPluginMacros.h"
@@ -20,6 +20,8 @@
 
 #include "mu2e-artdaq-core/Overlays/FragmentType.hh"
 #include "mu2e-artdaq-core/Overlays/TrackerFragment.hh"
+#include "mu2e-artdaq-core/Overlays/Mu2eEventFragment.hh"
+
 #include <Offline/RecoDataProducts/inc/StrawDigi.hh>
 #include <Offline/RecoDataProducts/inc/StrawDigiCollection.hh>
 #include <artdaq-core/Data/Fragment.hh>
@@ -33,12 +35,12 @@ namespace ots {
     struct Config {
       using Name = fhicl::Name;
       using Comment = fhicl::Comment;
-      fhicl::Atom<int>             port    { Name("port"),      Comment("This parameter sets the port where the histogram will be sent") };
-      fhicl::Atom<std::string>     address { Name("address"),   Comment("This paramter sets the IP address where the histogram will be sent") };
-      fhicl::Atom<art::InputTag>   trkTag  { Name("trkTag"),    Comment("trkTag") };
-      fhicl::Sequence<std::string> histType{ Name("histType"),  Comment("This parameter determines which quantity is histogrammed") };
-      fhicl::Atom<int>             freqDQM { Name("freqDQM"),   Comment("Frequency for sending histograms to the data-receiver") };
-      fhicl::Atom<int>             diag    { Name("diagLevel"), Comment("Diagnostic level"), 0 };
+      fhicl::Atom<int>             port      { Name("port"),      Comment("This parameter sets the port where the histogram will be sent") };
+      fhicl::Atom<std::string>     address   { Name("address"),   Comment("This paramter sets the IP address where the histogram will be sent") };
+      fhicl::Atom<std::string>     moduleTag { Name("moduleTag"), Comment("Module tag name") };
+      fhicl::Sequence<std::string> histType  { Name("histType"),  Comment("This parameter determines which quantity is histogrammed") };
+      fhicl::Atom<int>             freqDQM   { Name("freqDQM"),   Comment("Frequency for sending histograms to the data-receiver") };
+      fhicl::Atom<int>             diag      { Name("diagLevel"), Comment("Diagnostic level"), 0 };
     };
 
     typedef art::EDAnalyzer::Table<Config> Parameters;
@@ -53,55 +55,71 @@ namespace ots {
     void PlotRate(art::Event const& e);
 
   private:
-    Config          conf_;
-    int             port_;
-    std::string     address_;
-    art::InputTag   trkFragmentsTag_;
-    std::vector<std::string> histType_;
-    int             freqDQM_,  diagLevel_, evtCounter_;
+    Config                    conf_;
+    int                       port_;
+    std::string               address_;
+    std::string               moduleTag_;
+    std::vector<std::string>  histType_;
+    int                       freqDQM_,  diagLevel_, evtCounter_;
     art::ServiceHandle<art::TFileService> tfs;
-    // ProtoTypeHistos *histos = new ProtoTypeHistos();
-    HistoContainer* pedestal_histos = new HistoContainer();
-    HistoContainer* straw_histos = new HistoContainer();
-    HistoSender*    histSender_;
+    TrackerDQMHistoContainer* pedestal_histos = new TrackerDQMHistoContainer();
+    TrackerDQMHistoContainer* panel_histos    = new TrackerDQMHistoContainer();
+    TrackerDQMHistoContainer* summary_histos  = new TrackerDQMHistoContainer();
+    HistoSender*              histSender_;
+    bool                      doPedestalHist_, doPanelHist_;
+    std::string               moduleTag;
+    void analyze_tracker_(const mu2e::TrackerFragment& cc);
     
   };
 } // namespace ots
 
 ots::TrackerDQM::TrackerDQM(Parameters const& conf)
   : art::EDAnalyzer(conf), conf_(conf()), port_(conf().port()), address_(conf().address()),
-    trkFragmentsTag_(conf().trkTag()), histType_(conf().histType()), 
-    freqDQM_(conf().freqDQM()), diagLevel_(conf().diag()), evtCounter_(0) {
+    moduleTag_(conf().moduleTag()), histType_(conf().histType()), 
+    freqDQM_(conf().freqDQM()), diagLevel_(conf().diag()), evtCounter_(0), 
+    doPedestalHist_(false), doPanelHist_(false) {
   histSender_  = new HistoSender(address_, port_);
+  
+  if (diagLevel_>0){
+    __MOUT__ << "[TrackerDQM::analyze] DQM for "<< histType_[0] << std::endl;
+  }
+
+  for (std::string name : histType_) {
+    if (name == "pedestal") {
+      doPedestalHist_ = true;
+    }
+    if (name == "panels") {
+      doPanelHist_ = true;
+    }
+  }
 }
 
 void ots::TrackerDQM::beginJob() {
   __MOUT__ << "[TrackerDQM::beginJob] Beginning job" << std::endl;
-  // histos->BookHistos(tfs, "Pedestal");
-  for (int station = 0; station < 18; station++) {
-    for (int plane = 0; plane < 3; plane++) {
-      for (int panel = 0; panel < 7; panel++) {
-	for (int straw = 0; straw < 97; straw++) {
+  summary_histos->BookSummaryHistos(tfs,
+				    "PanelOccupancy", 220, 0, 220);
+  summary_histos->BookSummaryHistos(tfs,
+				    "PlaneOccupancy", 40, 0, 40);
+			     
+  if (doPedestalHist_){
+    for (int plane = 0; plane <  mu2e::StrawId::_nplanes; plane++) {
+      for (int panel = 0; panel < mu2e::StrawId::_npanels; panel++) {
+	for (int straw = 0; straw < mu2e::StrawId::_nstraws; straw++) {
 	  pedestal_histos->BookHistos(tfs,
-				      "Pedestal" + std::to_string(station) +
-				      " " + std::to_string(plane) + " " +
-				      std::to_string(panel) + " " +
+				      "Pedestal_" + std::to_string(plane) + "_" +
+				      std::to_string(panel) + "_" +
 				      std::to_string(straw),
-				      station, plane, panel, straw);
+				      plane, panel, straw);
 	}
       }
     }
   }
 
-  for (int station = 0; station < 18; station++) {
-    for (int plane = 0; plane < 3; plane++) {
-      for (int panel = 0; panel < 7; panel++) {
-	straw_histos->BookHistos(tfs,
-				 "Straw Hits" + std::to_string(station) + " " +
-				 std::to_string(plane) + " " +
-				 std::to_string(panel) + " " +
-				 std::to_string(0),
-				 station, plane, panel, 0);
+  if (doPanelHist_){
+    for (int plane = 0; plane <  mu2e::StrawId::_nplanes; plane++) {
+      for (int panel = 0; panel < mu2e::StrawId::_npanels; panel++) {
+	std::string   hName = "Panel_" + std::to_string(plane) + "_" + std::to_string(panel);
+	panel_histos->BookHistos(tfs, hName, plane, panel, -1);
       }
     }
   }
@@ -109,72 +127,75 @@ void ots::TrackerDQM::beginJob() {
 
 void ots::TrackerDQM::analyze(art::Event const& event) {
   ++evtCounter_;
-  //__MOUT__ << "I am Alive!" << std::endl;
-  art::Handle<artdaq::Fragments> trkFragment;
+  
+  std::vector<art::Handle<artdaq::Fragments>> fragmentHandles = event.getMany<std::vector<artdaq::Fragment>>();
 
-  event.getByLabel(trkFragmentsTag_, trkFragment);
+  for (const auto& handle : fragmentHandles) {
+    if (!handle.isValid() || handle->empty()) {
+      continue;
+    }
 
-  if (!trkFragment.isValid()) {
-    __MOUT__ << "[TrackerDQM::analyze] Invalid fragment" << std::endl;
-    return;
+    if (handle->front().type() == mu2e::detail::FragmentType::MU2EEVENT) {
+      for (const auto& cont : *handle) {
+        mu2e::Mu2eEventFragment mef(cont);
+        for (size_t ii = 0; ii < mef.tracker_block_count(); ++ii) {
+          auto pair = mef.trackerAtPtr(ii);
+          mu2e::TrackerFragment cc(pair);
+          analyze_tracker_(cc);
+        }
+      }
+    } else {
+      if (handle->front().type() == mu2e::detail::FragmentType::TRK) {
+        for (auto frag : *handle) {
+          mu2e::TrackerFragment cc(frag.dataBegin(), frag.dataSizeBytes());
+          analyze_tracker_(cc);
+        }
+      }
+    }
   }
 
-  auto numTrkFrags = trkFragment->size();
+}
 
-  if (diagLevel_>0){
-    __MOUT__ << "[TrackerDQM::analyze] number of trkFrags = " << numTrkFrags << std::endl;
-  }
-  for (size_t idx = 0; idx < numTrkFrags; ++idx) {
-    auto curHandle = trkFragment;
-    size_t curIdx = idx;
-    const auto& fragment((*curHandle)[curIdx]);
-
-    mu2e::TrackerFragment cc(fragment);
-
-    for (size_t curBlockIdx = 0; curBlockIdx < cc.block_count();
-	 curBlockIdx++) { // iterate over straws
-      auto block_data = cc.dataAtBlockIndex(curBlockIdx);
-      if (block_data == nullptr) {
-	mf::LogError("TrackerDQM") << "Unable to retrieve header from block "
-				   << curBlockIdx << "!" << std::endl;
+void  ots::TrackerDQM::analyze_tracker_(const mu2e::TrackerFragment& cc) {
+  for (size_t curBlockIdx = 0; curBlockIdx < cc.block_count(); curBlockIdx++) { // iterate over straws
+    auto block_data = cc.dataAtBlockIndex(curBlockIdx);
+    if (block_data == nullptr) {
+      mf::LogError("TrackerDQM") << "Unable to retrieve header from block "
+				 << curBlockIdx << "!" << std::endl;
+      continue;
+    }
+    auto hdr = block_data->GetHeader();
+    if (hdr->GetPacketCount() > 0) {
+      auto trkDatas = cc.GetTrackerData(curBlockIdx);
+      if (trkDatas.empty()) {
+	mf::LogError("TrackerDQM")
+	  << "Error retrieving Tracker data from DataBlock " << curBlockIdx
+	  << "!";
 	continue;
       }
-      auto hdr = block_data->GetHeader();
-      if (hdr->GetPacketCount() > 0) {
-	auto trkDatas = cc.GetTrackerData(curBlockIdx);
-	if (trkDatas.empty()) {
-	  mf::LogError("TrackerDQM")
-	    << "Error retrieving Tracker data from DataBlock " << curBlockIdx
-	    << "!";
-	  continue;
-	}
 
-	for (auto& trkData : trkDatas) {
-	  mu2e::StrawId sid(trkData.first->StrawIndex);
-	  //mu2e::TrkTypes::TDCValues tdc = {	    static_cast<uint16_t>(trkData.first->TDC0()),	    static_cast<uint16_t>(trkData.first->TDC1()) };
-	  //mu2e::TrkTypes::TOTValues tot = { trkData.first->TOT0,					    trkData.first->TOT1 };
-	  mu2e::TrkTypes::ADCWaveform adcs(trkData.second.begin(), trkData.second.end());
-
-	  for (std::string name : histType_) {
-	    if (name == "pedestal") {
-	      straw_fill(pedestal_histos, pedestal_est(adcs), "Pedestal", tfs, sid);
-	    }
-	    else if (name == "strawHits") {
-	      panel_fill(straw_histos, sid.straw(), "Straw Hits", tfs, sid);
-	    } // else if(name == "maxadc") {
-	    //	straw_fill(histos, max_adc(adcs), "Maximum ADC Value", tfs,
-	    //sid); } else if(name == "deltaT") { 	straw_fill(histos,
-	    //tdc[1]-tdc[0], "delta T", tfs, sid); } else if(name ==
-	    //"peak_pedestal") { 	straw_fill(histos, max_adc(adcs) -
-	    //pedestal_est(adcs), "Peak - Pedestal", tfs, sid);
-	    else {
-	      __MOUT_ERR__ << "Unrecognized histogram type" << std::endl;
-	    }
+      for (auto& trkData : trkDatas) {
+	mu2e::StrawId sid(trkData.first->StrawIndex);
+	//mu2e::TrkTypes::TDCValues tdc = {	    static_cast<uint16_t>(trkData.first->TDC0()),	    static_cast<uint16_t>(trkData.first->TDC1()) };
+	//mu2e::TrkTypes::TOTValues tot = { trkData.first->TOT0,					    trkData.first->TOT1 };
+	mu2e::TrkTypes::ADCWaveform adcs(trkData.second.begin(), trkData.second.end());
+	summary_fill(summary_histos, tfs, sid);
+		  
+	for (std::string name : histType_) {
+	  if (name == "pedestals") {
+	    pedestal_fill(pedestal_histos, pedestal_est(adcs), "Pedestal", tfs, sid);
+	  }
+	  else if (name == "panels") {
+	    panel_fill(panel_histos, sid.straw(), "Panel", tfs, sid);
+	  } 
+	  else {
+	    __MOUT_ERR__ << "Unrecognized histogram type" << std::endl;
 	  }
 	}
       }
     }
   }
+    
 
   if (evtCounter_ % freqDQM_  != 0) return;
   
@@ -183,33 +204,41 @@ void ots::TrackerDQM::analyze(art::Event const& event) {
   }
 
   //send a packet AND reset the histograms
+  std::map<std::string,std::vector<TH1*>>   hists_to_send;
+  
+  //send the summary hists
+  for (size_t i = 0; i < summary_histos->histograms.size(); i++) {
+    __MOUT__ << "[TrackerDQM::analyze] collecting summary histogram "<< summary_histos->histograms[i]._Hist << std::endl;
+    hists_to_send[moduleTag_+"_summary"].push_back((TH1*)summary_histos->histograms[i]._Hist->Clone());
+    summary_histos->histograms[i]._Hist->Reset();
+  }
+
   for (std::string name : histType_) {
     if (diagLevel_>0){
       __MOUT__ << "[TrackerDQM::analyze] collecting histograms from the block: "<< name << std::endl;
     }
-    std::vector<TH1*>   hists_to_send;
-    if (name == "pedestal") {   
+    if (name == "pedestals") {   
       //prepare the vector of histograms
       for (size_t i = 0; i < pedestal_histos->histograms.size(); i++) {
-	hists_to_send.push_back((TH1*)pedestal_histos->histograms[i]._Hist->Clone());
+	hists_to_send[moduleTag_+"_"+name+"/plane_"+std::to_string(pedestal_histos->histograms[i].plane)+
+		      "/panel_" +std::to_string(pedestal_histos->histograms[i].panel)].push_back((TH1*)pedestal_histos->histograms[i]._Hist->Clone());
 	pedestal_histos->histograms[i]._Hist->Reset();
       }
-    }else if(name == "strawHits") {
-      //prepare the vector of histograms
-      for (size_t i = 0; i < straw_histos->histograms.size(); i++) {
-	hists_to_send.push_back((TH1*)straw_histos->histograms[i]._Hist->Clone());
-	straw_histos->histograms[i]._Hist->Reset();
-      }
-    }
-    if (hists_to_send.size() != 0) {
-      std::string  tagName = "Tracker_"+name;
-      histSender_->sendHistograms(tagName, hists_to_send);
+    }else if(name == "panels") {
       if (diagLevel_>0){
-	__MOUT__ << "[TrackerDQM::analyze] sent histograms with tag: "<< tagName << std::endl;
+	__MOUT__ << Form("[%s::analyze] preparing the collection of hists for  ", moduleTag_.data())<< name << " histograms"<< std::endl;
+      }
+      //prepare the vector of histograms
+      __MOUT__ << Form("[%sDQM::analyze] N hists =  ", moduleTag_.data())<< panel_histos->histograms.size() << std::endl;
+      for (size_t i = 0; i < panel_histos->histograms.size(); i++) {
+      	std::string  refName = moduleTag_+"_"+name+"/plane_"+std::to_string(panel_histos->histograms[i].plane);
+      	hists_to_send[refName].push_back((TH1*)panel_histos->histograms[i]._Hist->Clone());
+      	panel_histos->histograms[i]._Hist->Reset();
       }
     }
   }
-  
+
+  histSender_->sendHistograms(hists_to_send);
 }
 
 void ots::TrackerDQM::endJob() {}

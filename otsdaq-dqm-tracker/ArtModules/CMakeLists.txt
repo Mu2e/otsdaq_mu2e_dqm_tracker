@@ -8,23 +8,23 @@ art_make( BASENAME_ONLY
  LIB_LIBRARIES
 ) #add libs here if want more mu2e stuff $OFFLINE_LIBS - > get name: libNAME.so
 
-simple_plugin(Occupancy "module"
+basic_plugin(Occupancy "module"
 art_root_io::TFileService_service
 otsdaq::NetworkUtilities
 ${ROOT_BASIC_LIB_LIST}
 )
 
-simple_plugin(TrackerDQM "module"
+basic_plugin(TrackerDQM "module"
 art_root_io::TFileService_service
 mu2e_artdaq_core::mu2e-artdaq-core_Overlays
 otsdaq_mu2e::otsdaq-mu2e_ArtModules
 )
 
 
-simple_plugin(BeamMonitor "module"
-art_root_io::TFileService_service
-otsdaq::NetworkUtilities
-${ROOT_BASIC_LIB_LIST}
-mu2e_Mu2eUtilities
-)
+# basic_plugin(BeamMonitor "module"
+# art_root_io::TFileService_service
+# otsdaq::NetworkUtilities
+# ${ROOT_BASIC_LIB_LIST}
+# mu2e_Mu2eUtilities
+# )
 

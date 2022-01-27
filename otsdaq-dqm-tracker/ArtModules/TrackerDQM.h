@@ -3,7 +3,7 @@
 #include "Offline/DataProducts/inc/TrkTypes.hh"
 #include "art/Framework/Core/ModuleMacros.h"
 #include "art_root_io/TFileService.h"
-#include "otsdaq-dqm-tracker/ArtModules/HistoContainer.h"
+#include "otsdaq-dqm-tracker/ArtModules/TrackerDQMHistoContainer.h"
 #include "otsdaq/Macros/ProcessorPluginMacros.h"
 
 namespace ots {
@@ -32,10 +32,28 @@ unsigned short max_adc(mu2e::TrkTypes::ADCWaveform adcs) {
   return maxadc;
 }
 
-void straw_fill(HistoContainer *histos, int data, std::string title,
+
+
+
+
+void summary_fill(TrackerDQMHistoContainer *histos,  art::ServiceHandle<art::TFileService> tfs, mu2e::StrawId sid) {
+  //  __MOUT__ << "filling Summary histograms..."<< std::endl;
+
+  if (histos->histograms.size() == 0) {
+    __MOUT__ << "No histograms booked. Should they have been created elsewhere?"
+             << std::endl;
+  } else {
+    
+    histos->histograms[0]._Hist->Fill(sid.uniquePanel());
+    histos->histograms[1]._Hist->Fill(sid.plane());
+    
+  }
+}
+
+
+void panel_fill(TrackerDQMHistoContainer *histos, int data, std::string title,
                 art::ServiceHandle<art::TFileService> tfs, mu2e::StrawId sid) {
-  __MOUT__ << title.c_str() + std::to_string(sid.station()) + " " +
-                  std::to_string(sid.plane()) + " " +
+  __MOUT__ << title.c_str() + std::to_string(sid.plane()) + " " +
                   std::to_string(sid.panel()) + " " +
                   std::to_string(sid.straw())
            << std::endl;
@@ -43,31 +61,20 @@ void straw_fill(HistoContainer *histos, int data, std::string title,
   if (histos->histograms.size() == 0) {
     __MOUT__ << "No histograms booked. Should they have been created elsewhere?"
              << std::endl;
-
-    // histos->BookHistos(tfs, title.c_str() + std::to_string(sid.station()) + "
-    // " + std::to_string(sid.plane()) + " " + std::to_string(sid.panel()) + " "
-    // + std::to_string(sid.straw()), sid);
-    // histos->histograms[0]._Hist->Fill(data);
   } else {
     for (int histIdx = 0; histIdx < int(histos->histograms.size()); ++histIdx) {
       if ((sid.straw() == histos->histograms[histIdx].straw) &&
           (sid.panel() == histos->histograms[histIdx].panel) &&
-          (sid.plane() == histos->histograms[histIdx].plane) &&
-          (sid.station() == histos->histograms[histIdx].station)) { // if the histogram does exist, fill it
+          (sid.plane() == histos->histograms[histIdx].plane) ) { // if the histogram does exist, fill it
         histos->histograms[histIdx]._Hist->Fill(data);
         __MOUT__ << "number of histos: " << histos->histograms.size()
                  << std::endl;
         break;
       }
 
-      if (histIdx == int(histos->histograms.size() - 1)) { // if the histogram doesn't exist, book it
-        // histos->BookHistos(tfs, title.c_str() + std::to_string(sid.station())
-        // + " " + std::to_string(sid.plane()) + " " +
-        // std::to_string(sid.panel()) + " " + std::to_string(sid.straw()), sid);
-        // histos->histograms[histIdx]._Hist->Fill(data);
+      if (histIdx == int(histos->histograms.size() - 1)) { 
         __MOUT__ << "Cannot find histogram: "
-                 << title + std::to_string(sid.station()) + " " +
-                        std::to_string(sid.plane()) + " " +
+                 << title + std::to_string(sid.plane()) + " " +
                         std::to_string(sid.panel()) + " " +
                         std::to_string(sid.straw())
                  << std::endl;
@@ -76,30 +83,30 @@ void straw_fill(HistoContainer *histos, int data, std::string title,
   }
 }
 
-void panel_fill(HistoContainer *histos, int data, std::string title,
+void pedestal_fill(TrackerDQMHistoContainer *histos, int data, std::string title,
                 art::ServiceHandle<art::TFileService> tfs, mu2e::StrawId sid) {
   if (histos->histograms.size() == 0) {
     __MOUT__ << "No histograms booked. Should they have been created elsewhere?"
              << std::endl;
-
-    // histos->BookHistos(tfs, title.c_str(), sid);
-    // histos->histograms[0]._Hist->Fill(data);
   } else {
+    bool   foundHist(false);
     for (int histIdx = 0; histIdx < int(histos->histograms.size()); ++histIdx) {
-      if ((sid.panel() == histos->histograms[histIdx].panel) &&
-          (sid.plane() == histos->histograms[histIdx].plane) &&
-          (sid.station() == histos->histograms[histIdx].station)) {
+      //__MOUT__ << "[TrackerDWM::panel_fill] hist block:  "<<histos->histograms[histIdx].plane <<", "<< histos->histograms[histIdx].panel<< std::endl;
+
+      if ((sid.panel()   == histos->histograms[histIdx].panel) &&
+          (sid.plane()   == histos->histograms[histIdx].plane) ) {
         histos->histograms[histIdx]._Hist->Fill(data);
+	//	__MOUT__ << "[TrackerDWM::panel_fill] filled hist "<<sid.plane() <<", "<< sid.panel()<< std::endl;
+	foundHist = true;
         break;
       }
-      if (histIdx == int(histos->histograms.size() - 1)) {
-        histos->BookHistos(tfs,
-                           title.c_str() + std::to_string(sid.station()) + " " +
-                               std::to_string(sid.plane()) + " " +
-                               std::to_string(sid.panel()) + " ",
-                           sid);
-        histos->histograms[histIdx]._Hist->Fill(data);
-      }
+      
+    }
+    if (!foundHist){
+      __MOUT__ << "Cannot find histogram: "
+	       << title + "_"+std::to_string(sid.plane()) + "_" +
+	std::to_string(sid.panel())
+	       << std::endl;
     }
   }
 }
