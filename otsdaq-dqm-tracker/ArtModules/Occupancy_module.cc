@@ -58,7 +58,6 @@
 #include <Offline/RecoDataProducts/inc/TriggerInfo.hh>
 
 #include <Offline/MCDataProducts/inc/ProtonBunchIntensity.hh>
-#include <Offline/GlobalConstantsService/inc/ParticleDataTable.hh>
 
 // OTS:
 #include "otsdaq-dqm-tracker/ArtModules/OccupancyRootObjects.h"

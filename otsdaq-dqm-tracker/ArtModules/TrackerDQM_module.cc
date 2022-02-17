@@ -23,7 +23,6 @@
 #include "mu2e-artdaq-core/Overlays/Mu2eEventFragment.hh"
 
 #include <Offline/RecoDataProducts/inc/StrawDigi.hh>
-#include <Offline/RecoDataProducts/inc/StrawDigiCollection.hh>
 #include <artdaq-core/Data/Fragment.hh>
 
 #include "Offline/DataProducts/inc/StrawId.hh"
