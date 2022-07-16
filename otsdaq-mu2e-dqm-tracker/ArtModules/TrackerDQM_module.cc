@@ -10,17 +10,17 @@
 #include <TBufferFile.h>
 #include <TH1F.h>
 
-#include "otsdaq-dqm-tracker/ArtModules/TrackerDQMHistoContainer.h"
-#include "otsdaq-dqm-tracker/ArtModules/TrackerDQM.h"
+#include "otsdaq-mu2e-dqm-tracker/ArtModules/TrackerDQMHistoContainer.h"
+#include "otsdaq-mu2e-dqm-tracker/ArtModules/TrackerDQM.h"
 #include "otsdaq/Macros/CoutMacros.h"
 #include "otsdaq/Macros/ProcessorPluginMacros.h"
 #include "otsdaq/MessageFacility/MessageFacility.h"
 #include "otsdaq/NetworkUtilities/TCPSendClient.h"
 #include "otsdaq-mu2e/ArtModules/HistoSender.hh"
 
-#include "mu2e-artdaq-core/Overlays/FragmentType.hh"
-#include "mu2e-artdaq-core/Overlays/TrackerFragment.hh"
-#include "mu2e-artdaq-core/Overlays/Mu2eEventFragment.hh"
+#include "artdaq-core-mu2e/Overlays/FragmentType.hh"
+#include "artdaq-core-mu2e/Overlays/TrackerFragment.hh"
+#include "artdaq-core-mu2e/Overlays/Mu2eEventFragment.hh"
 
 #include <Offline/RecoDataProducts/inc/StrawDigi.hh>
 #include <artdaq-core/Data/Fragment.hh>

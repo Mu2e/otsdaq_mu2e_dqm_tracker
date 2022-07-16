@@ -60,7 +60,7 @@
 #include <Offline/MCDataProducts/inc/ProtonBunchIntensity.hh>
 
 // OTS:
-#include "otsdaq-dqm-tracker/ArtModules/OccupancyRootObjects.h"
+#include "otsdaq-mu2e-dqm-tracker/ArtModules/OccupancyRootObjects.h"
 #include "otsdaq/Macros/CoutMacros.h"
 #include "otsdaq/Macros/ProcessorPluginMacros.h"
 #include "otsdaq/MessageFacility/MessageFacility.h"

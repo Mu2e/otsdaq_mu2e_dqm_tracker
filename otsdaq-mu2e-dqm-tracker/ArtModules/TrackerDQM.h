@@ -3,7 +3,7 @@
 #include "Offline/DataProducts/inc/TrkTypes.hh"
 #include "art/Framework/Core/ModuleMacros.h"
 #include "art_root_io/TFileService.h"
-#include "otsdaq-dqm-tracker/ArtModules/TrackerDQMHistoContainer.h"
+#include "otsdaq-mu2e-dqm-tracker/ArtModules/TrackerDQMHistoContainer.h"
 #include "otsdaq/Macros/ProcessorPluginMacros.h"
 
 namespace ots {

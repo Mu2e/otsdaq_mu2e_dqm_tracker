@@ -1,8 +1,8 @@
 # ======================================================================
-#  otsdaq-mu2e-dqm main build file
+#  otsdaq-mu2e-dqm-tracker main build file
 #
 #  cd .../path/to/build/directory
-#  source .../path/to/otsdaq-mu2e-dqm/ups/setup_for_development
+#  source .../path/to/otsdaq-mu2e-dqm-tracker/ups/setup_for_development
 #  buildtool
 # ======================================================================
 
@@ -101,7 +101,7 @@ include(BuildPlugins)
 include(CetTest)
 
 # Code
-add_subdirectory(otsdaq-dqm-tracker)
+add_subdirectory(otsdaq-mu2e-dqm-tracker)
 
 # Useful scripts
 add_subdirectory(tools)
