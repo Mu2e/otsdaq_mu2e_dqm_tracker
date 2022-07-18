@@ -1,4 +1,4 @@
-#include "otsdaq-dqm-tracker/FEInterfaces/FEHistoMakerInterface.h"
+#include "otsdaq-mu2e-dqm-tracker/FEInterfaces/FEHistoMakerInterface.h"
 #include "otsdaq/Macros/CoutMacros.h"
 #include "otsdaq/Macros/InterfacePluginMacros.h"
 #include "otsdaq/MessageFacility/MessageFacility.h"

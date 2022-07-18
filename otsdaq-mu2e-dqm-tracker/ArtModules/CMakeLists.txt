@@ -16,7 +16,7 @@ ${ROOT_BASIC_LIB_LIST}
 
 basic_plugin(TrackerDQM "module"
 art_root_io::TFileService_service
-mu2e_artdaq_core::mu2e-artdaq-core_Overlays
+artdaq_core_mu2e::artdaq-core-mu2e_Overlays
 otsdaq_mu2e::otsdaq-mu2e_ArtModules
 )
 
