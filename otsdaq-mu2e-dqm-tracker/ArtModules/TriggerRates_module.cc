@@ -38,7 +38,7 @@
 #include <TProfile.h>
 
 // Offline:
-#include <ConditionsService/inc/AcceleratorParams.hh>
+#include <Offline/ConditionsService/inc/AcceleratorParams.hh>
 #include <ConditionsService/inc/ConditionsHandle.hh>
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wtype-limits"
