@@ -67,8 +67,8 @@ void pedestal_fill(TrackerDQMHistoContainer *histos, int data, std::string title
           (sid.panel() == histos->histograms[histIdx].panel) &&
           (sid.plane() == histos->histograms[histIdx].plane) ) { // if the histogram does exist, fill it
         histos->histograms[histIdx]._Hist->Fill(data);
-        __MOUT__ << "number of histos: " << histos->histograms.size()
-                 << std::endl;
+        // __MOUT__ << "number of histos: " << histos->histograms.size()
+        //          << std::endl;
         break;
       }
 
