@@ -31,6 +31,8 @@ cet_set_compiler_flags(DIAGS VIGILANT
 # these are minimum required versions, not the actual product versions
 find_package(otsdaq_mu2e 1.02.00 REQUIRED)
 
+#find_package(art_root_io 1.10.01 REQUIRED)
+
 # Mu2e Offline Extra setup
 include_directories($ENV{OFFLINE_INC} $ENV{BTRK_INC} $ENV{KINKAL_INC})
 link_directories($ENV{OFFLINE_LIB})
